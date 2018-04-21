@@ -63,12 +63,11 @@ void UART_init(UART_ChannelType uartChannel, uint32 systemClk, UART_BaudRateType
 
 		case UART_1:
 			SIM->SCGC5 |= SIM_SCGC5_PORTC_MASK;
-						SIM->SCGC4 |= SIM_SCGC4_UART1_MASK;
+			SIM->SCGC4 |= SIM_SCGC4_UART1_MASK;
 		/**Configures the pin control register of pin3 in PortC as UART RX*/
 			PORTC->PCR[3] = PORT_PCR_MUX(3);
 			/**Configures the pin control register of pin4 in PortC as UART TX*/
 			PORTC->PCR[4] = PORT_PCR_MUX(3);
-
 			UART1->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);/*Deshabilita el transmisor y el receptor de la UART en el registro UART1_C2 */
 			UART1->BDH |= UART_BDH_SBR_MASK & (UART_BuadRate >> GET8);/*Copiar los bits uartBaudRate[12:8] a los bits SRB del registro UARTx_BDH */
 			UART1->BDL &= ~(UART_BDL_SBR_MASK);

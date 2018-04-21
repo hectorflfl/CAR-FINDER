@@ -57,8 +57,24 @@ int main(void) {
 	EnableInterrupts;
 	ADC_init();
 	PIT_clockGating();
-	UART_putString(UART_1,"ATD3929270291;\n");
+	//LLAMAR
+	//UART_putString(UART_1,"ATD3929270291;\n");
+	delay_msOrus(FALSE, SYSCLK, 15000);
+//	UART_putString(UART_1,"ATD3929270291;\n");
 //	UART1->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
+
+	//MENSAJE
+	UART_putString(UART_1,"AT+CMGF=1\r\n");
+	UART_putString(UART_1,"AT+CMGS=\"3929270291\"\n");
+	UART_putString(UART_1,"Prueba\n");
+	UART_putChar(UART_1,26);
+	UART_putString(UART_1,"\n");
+	delay_msOrus(FALSE, SYSCLK, 15000);
+
+
+
+
+
 
 
     while(1) {
