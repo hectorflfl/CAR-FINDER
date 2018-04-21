@@ -50,19 +50,21 @@
 
 int main(void) {
 	uint8 det=TRUE;
-	UART_init(UART_1, SYSCLK, BAUDRATE9600);
+	UART_init(UART_1, SYSCLK, BD_9600);
+	UART0_interruptEnable(UART_1);
 	NVIC_enableInterruptAndPriotity(PIT_CH0_IRQ, PRIORITY_15);
 	NVIC_enableInterruptAndPriotity(UART1_IRQ, PRIORITY_14);
 	EnableInterrupts;
 	ADC_init();
 	PIT_clockGating();
-	UART1->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
+	UART_putString(UART_1,"ATD3929270291;\n");
+//	UART1->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
 
 
     while(1) {
 
 
-    	if(PIT_interruptFlagStatus(PIT_0)==TRUE){
+ /* if(PIT_interruptFlagStatus(PIT_0)==TRUE){
     		PIT_clear(PIT_0);
     		PIT_disabled(PIT_0);
     		det=TRUE;
@@ -76,7 +78,7 @@ int main(void) {
     		UART1_enable();
 
     	}
-
+*/
 
 
     }

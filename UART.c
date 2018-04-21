@@ -8,6 +8,7 @@
 #include "UART.h"
 #include "PasswordDetector.h"
 #include "MK64F12.h"
+#include "GlobalFunctions.h"
 
 
 
@@ -52,7 +53,7 @@ void UART_init(UART_ChannelType uartChannel, uint32 systemClk, UART_BaudRateType
 			SIM->SCGC4 |= SIM_SCGC4_UART0_MASK;/*Activamos el reloj de la UART0*/
 			PORTB->PCR[16] = PORT_PCR_MUX(3);
 					/**Configures the pin control register of pin16 in PortB as UART TX*/
-					PORTB->PCR[17] = PORT_PCR_MUX(3);
+			PORTB->PCR[17] = PORT_PCR_MUX(3);
 			UART0->C2  &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);/*Deshabilita el transmisor y el receptor de la UART en el registro UART0_C2 */
 			UART0->BDH |= UART_BDH_SBR_MASK & (UART_BuadRate >> GET8);/*Copiar los bits uartBaudRate[12:8] a los bits SRB del registro UARTx_BDH */
 			UART0->BDL &= ~(UART_BDL_SBR_MASK);
@@ -62,12 +63,12 @@ void UART_init(UART_ChannelType uartChannel, uint32 systemClk, UART_BaudRateType
 
 		case UART_1:
 			SIM->SCGC5 |= SIM_SCGC5_PORTC_MASK;
-			SIM->SCGC4 |= SIM_SCGC4_UART1_MASK;
-			/**Configures the pin control register of pin3 in PortC as UART RX*/
+						SIM->SCGC4 |= SIM_SCGC4_UART1_MASK;
+		/**Configures the pin control register of pin3 in PortC as UART RX*/
 			PORTC->PCR[3] = PORT_PCR_MUX(3);
 			/**Configures the pin control register of pin4 in PortC as UART TX*/
 			PORTC->PCR[4] = PORT_PCR_MUX(3);
-			UART0_interruptEnable(UART_1);
+
 			UART1->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);/*Deshabilita el transmisor y el receptor de la UART en el registro UART1_C2 */
 			UART1->BDH |= UART_BDH_SBR_MASK & (UART_BuadRate >> GET8);/*Copiar los bits uartBaudRate[12:8] a los bits SRB del registro UARTx_BDH */
 			UART1->BDL &= ~(UART_BDL_SBR_MASK);
@@ -186,6 +187,7 @@ void UART_putString(UART_ChannelType uartChannel, sint8* string)
 	/**Transmit each char until the end symbol is found*/
 	while (*string)
 	{
+		//delay(800);
 		/**Transmit one char*/
 		UART_putChar(uartChannel, *string++);
 	}
