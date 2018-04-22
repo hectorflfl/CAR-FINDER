@@ -54,7 +54,10 @@
 #define DELAY_1S 30
 #define DELAY_3S 3000
 #define PIR_MAX 62000
+#define ASCII_CONVERT 0x30
+#define COUNTDOWN 15
 
+	int counter = COUNTDOWN;
 
 int main(void) {
 	const SPI_ConfigType SPI_Config = { SPI_DISABLE_FIFO, SPI_LOW_POLARITY,
@@ -67,7 +70,7 @@ int main(void) {
 												SPI_FSIZE_8,
 												{ GPIO_D, BIT1, BIT2 } };
 	pins_initialize();/**Inicialización de los pines */
-				pins_interrupts();/**Habilitación de las interrupciones de los pines */
+	pins_interrupts();/**Habilitación de las interrupciones de los pines */
 	//UART1----PUERTO C
 
 	uint8 det=TRUE;
@@ -78,20 +81,14 @@ int main(void) {
 	UART_init(UART_3, SYSCLK, BD_9600);//UART3 BLUETOOTH
 	UART_interruptEnable(UART_3);
 
-	NVIC_enableInterruptAndPriotity(PIT_CH0_IRQ, PRIORITY_15);
-	NVIC_enableInterruptAndPriotity(PIT_CH1_IRQ, PRIORITY_12);
-	NVIC_enableInterruptAndPriotity(UART1_IRQ, PRIORITY_14);
-	NVIC_enableInterruptAndPriotity(UART3_IRQ, PRIORITY_13);
-
 	EnableInterrupts;
 	ADC_init();
 	PIT_clockGating();
-
 	SPI_init(&SPI_Config);/**Inicialización del SPI */
 	LCDNokia_init();/**Inicialización del LCD NOKIA */
 
 
-			int counter = 15;
+
 
 
 	//LAMAR
@@ -106,31 +103,24 @@ int main(void) {
 	//UART_putString(UART_1,"\n");
 
 
-
-
-
-
-
-
     while(1) {
     	if (TRUE == PIT_interruptFlagStatus(PIT_1)) {
 
-    	    		if(counter != 0){
+    	    		if(FALSE != counter){
     	    			counter--;
-    	    		obtenvalor(counter);
-    	    		LCDNokia_clear();		/*Limpiamos la pantalla para mostrar el siguiente menú*/
-    				LCDNokia_gotoXY(20, 3); /*! It establishes the position to print the messages in the LCD*/
-    				if(getDecena() != 0){
-    				LCDNokia_sendChar(getDecena()+0x30); /*! It print a string stored in an array*/
-    				}
-    				LCDNokia_sendChar(getUnidad()+0x30); /*! It print a string stored in an array*/
+    	    			obtenvalor(counter);
+    	    			LCDNokia_clear();		/*Limpiamos la pantalla para mostrar el siguiente menú*/
+    	    			LCDNokia_gotoXY(20, 3); /*! It establishes the position to print the messages in the LCD*/
+    	    			if(FALSE != getDecena()){
+    	    				LCDNokia_sendChar(getDecena() + ASCII_CONVERT); /*! It print a string stored in an array*/
+    	    			}
+    	    			LCDNokia_sendChar(getUnidad() + ASCII_CONVERT); /*! It print a string stored in an array*/
     	    		}else{
     	    			LCDNokia_clear();		/*Limpiamos la pantalla para mostrar el siguiente menú*/
     	    			LCDNokia_gotoXY(0, 3); /*! It establishes the position to print the messages in the LCD*/
     	    			LCDNokia_sendString("INTRUZO");
     	    		}
     	    				PIT_clear(PIT_1);
-    	    				/*Volvemos a contar*/
     	    				PIT_delay(PIT_1, SYSCLK, DELAY1S);
     	    			}
 
