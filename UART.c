@@ -18,6 +18,7 @@
 /**This is mail box to received the information from the serial port*/
 UART_MailBoxType UART0_MailBox;
 UART_MailBoxType UART1_MailBox;
+UART_MailBoxType UART3_MailBox;
 
 /*Función que nos ayuda a limpiar la bandera y asignar a mailbox*/
 void UART0_RX_TX_IRQHandler(void)
@@ -25,6 +26,7 @@ void UART0_RX_TX_IRQHandler(void)
 	while(FALSE == (UNO & (UART0->S1 >> UART_S1_RDRF_SHIFT)));
 	UART0_MailBox.mailBox = UART0->D;/*Reads return the contents of the read-only receive data register*/
 	UART0_MailBox.flag = TRUE;		/*Assign cero to the flag*/
+	passwordVerification(UART1_MailBox.mailBox);
 
 }
 
@@ -33,7 +35,16 @@ void UART1_RX_TX_IRQHandler(void)
 	while(FALSE == (UNO & (UART1->S1 >> UART_S1_RDRF_SHIFT)));
 	UART1_MailBox.mailBox = UART1->D;/*Reads return the contents of the read-only receive data register*/
 	UART1_MailBox.flag = TRUE;		/*Assign cero to the flag*/
-	passwordVerification(UART1_MailBox.mailBox);
+
+
+}
+
+void UART3_RX_TX_IRQHandler(void)
+{
+	while(FALSE == (UNO & (UART3->S1 >> UART_S1_RDRF_SHIFT)));
+	UART3_MailBox.mailBox = UART3->D;/*Reads return the contents of the read-only receive data register*/
+	UART3_MailBox.flag = TRUE;		/*Assign cero to the flag*/
+	passwordVerification(UART3_MailBox.mailBox);
 
 }
 
@@ -85,7 +96,12 @@ void UART_init(UART_ChannelType uartChannel, uint32 systemClk, UART_BaudRateType
 		break;
 
 		case UART_3:
+			SIM->SCGC5|=SIM_SCGC5_PORTB_MASK;
 			SIM->SCGC4 |= SIM_SCGC4_UART3_MASK;/*Activamos el reloj de la UART3*/
+			/**Configures the pin control register of pin3 in PortC as UART RX*/
+			PORTB->PCR[10] = PORT_PCR_MUX(3);
+			/**Configures the pin control register of pin4 in PortC as UART TX*/
+			PORTB->PCR[11] = PORT_PCR_MUX(3);
 			UART3->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);/*Deshabilita el transmisor y el receptor de la UART en el registro UART3_C2 */
 			UART3->BDH |= UART_BDH_SBR_MASK & (UART_BuadRate >> GET8);/*Copiar los bits uartBaudRate[12:8] a los bits SRB del registro UARTx_BDH */
 			UART3->BDL &= ~(UART_BDL_SBR_MASK);
@@ -114,7 +130,7 @@ void UART_init(UART_ChannelType uartChannel, uint32 systemClk, UART_BaudRateType
 }
 
 /*Funcion para habilitar las interrupciones*/
-void UART0_interruptEnable(UART_ChannelType uartChannel)
+void UART_interruptEnable(UART_ChannelType uartChannel)
 {
 	switch(uartChannel)
 	{
@@ -192,10 +208,10 @@ void UART_putString(UART_ChannelType uartChannel, sint8* string)
 	}
 }
 
-void UART1_disable(){
-	UART1->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
+void UART3_disable(){
+	UART3->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
 }
 
-void UART1_enable(){
-	UART1->C2 |= (UART_C2_TE_MASK | UART_C2_RE_MASK);
+void UART3_enable(){
+	UART3->C2 |= (UART_C2_TE_MASK | UART_C2_RE_MASK);
 }

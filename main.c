@@ -42,6 +42,11 @@
 #include "ADC.h"
 #include "GPIO.h"
 #include "PIT.h"
+#include "delay.h"
+#include "SPI.h"
+#include "Ports_Init.h"
+#include "LCDNokia5110.h"
+#include "Decifra_valor.h"
 
 #define SYSCLK 21000000
 #define BAUDRATE9600 9600
@@ -49,27 +54,54 @@
 
 
 int main(void) {
+	const SPI_ConfigType SPI_Config = { SPI_DISABLE_FIFO, SPI_LOW_POLARITY,
+												SPI_LOW_PHASE,
+												SPI_MSB,
+												SPI_0,
+												SPI_MASTER,
+												GPIO_MUX2,
+												SPI_BAUD_RATE_2,
+												SPI_FSIZE_8,
+												{ GPIO_D, BIT1, BIT2 } };
+	pins_initialize();/**Inicialización de los pines */
+				pins_interrupts();/**Habilitación de las interrupciones de los pines */
+	//UART1----PUERTO C
+
 	uint8 det=TRUE;
-	UART_init(UART_1, SYSCLK, BD_9600);
-	UART0_interruptEnable(UART_1);
+
+	UART_init(UART_1, SYSCLK, BD_9600);//UART1 SIM808
+	UART_interruptEnable(UART_1);
+
+	UART_init(UART_3, SYSCLK, BD_9600);//UART3 BLUETOOTH
+	UART_interruptEnable(UART_3);
+
 	NVIC_enableInterruptAndPriotity(PIT_CH0_IRQ, PRIORITY_15);
+	NVIC_enableInterruptAndPriotity(PIT_CH1_IRQ, PRIORITY_12);
 	NVIC_enableInterruptAndPriotity(UART1_IRQ, PRIORITY_14);
+	NVIC_enableInterruptAndPriotity(UART3_IRQ, PRIORITY_13);
+
 	EnableInterrupts;
 	ADC_init();
 	PIT_clockGating();
-	//LLAMAR
-	//UART_putString(UART_1,"ATD3929270291;\n");
-	delay_msOrus(FALSE, SYSCLK, 15000);
+
+	SPI_init(&SPI_Config);/**Inicialización del SPI */
+				LCDNokia_init();/**Inicialización del LCD NOKIA */
+			/*Se habilita el PIT con 1 segundo de retardo*/
+
+			int counter = 15;
+
+
+	//LAMAR
+//UART_putString(UART_1,"ATD3929270291;\n");
 //	UART_putString(UART_1,"ATD3929270291;\n");
 //	UART1->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
 
-	//MENSAJE
-	UART_putString(UART_1,"AT+CMGF=1\r\n");
-	UART_putString(UART_1,"AT+CMGS=\"3929270291\"\n");
-	UART_putString(UART_1,"Prueba\n");
-	UART_putChar(UART_1,26);
-	UART_putString(UART_1,"\n");
-	delay_msOrus(FALSE, SYSCLK, 15000);
+	//UART_putString(UART_1,"AT+CMGF=1\r\n");
+	//UART_putString(UART_1,"AT+CMGS=\"3929270291\"\n");
+	//UART_putString(UART_1,"YES\n");
+	//UART_putChar(UART_1,26);
+	//UART_putString(UART_1,"\n");
+
 
 
 
@@ -78,25 +110,54 @@ int main(void) {
 
 
     while(1) {
+    	if (TRUE == PIT_interruptFlagStatus(PIT_1)) {
+
+    	    		if(counter != 0){
+    	    			counter--;
+    	    		obtenvalor(counter);
+    	    		LCDNokia_clear();		/*Limpiamos la pantalla para mostrar el siguiente menú*/
+    				LCDNokia_gotoXY(20, 3); /*! It establishes the position to print the messages in the LCD*/
+    				if(getDecena() != 0){
+    				LCDNokia_sendChar(getDecena()+0x30); /*! It print a string stored in an array*/
+    				}
+    				LCDNokia_sendChar(getUnidad()+0x30); /*! It print a string stored in an array*/
+    	    		}else{
+    	    			LCDNokia_clear();		/*Limpiamos la pantalla para mostrar el siguiente menú*/
+    	    			LCDNokia_gotoXY(0, 3); /*! It establishes the position to print the messages in the LCD*/
+    	    			LCDNokia_sendString("INTRUZO");
+    	    		}
 
 
- /* if(PIT_interruptFlagStatus(PIT_0)==TRUE){
+    	    				PIT_clear(PIT_1);
+    	    				/*Volvemos a contar*/
+    	    				PIT_delay(PIT_1, SYSCLK, DELAY1S);
+    	    			}
+
+  if(PIT_interruptFlagStatus(PIT_0)==TRUE){
     		PIT_clear(PIT_0);
     		PIT_disabled(PIT_0);
     		det=TRUE;
-    		UART1_disable();
+    		UART3_disable();
     		puts("TERMINO EL TIEMPO");
+    		if(FALSE==get_AccessStatus()){
+    		UART_putString(UART_1,"ATD3929270291;\n");
+    		}
+    		clear_AccessStatus();
+
     	}
 
-    	if(ADC_read16b()>60000 && det==TRUE){
+   if(ADC_read16b()>62000 && det==TRUE){
+	   	   PIT_delay(PIT_1, SYSCLK, DELAY1S);/**Se activa el PIT0 para referescar la pantalla */
     		PIT_delay(PIT_0, SYSCLK, DELAY_1S);
     		det=FALSE;
-    		UART1_enable();
+    		UART3_enable();
 
     	}
-*/
+
 
 
     }
     return 0 ;
 }
+
+

@@ -25,6 +25,6 @@ void passwordVerification(uint8 pass_detected){
 uint8 get_AccessStatus(){
 	return AccessStatus;
 }
-uint8 clear_AccessStatus(){
+void clear_AccessStatus(){
 	AccessStatus=FALSE;
 }

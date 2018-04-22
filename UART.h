@@ -67,7 +67,7 @@ void UART_init(UART_ChannelType uartChannel, uint32 systemClk, UART_BaudRateType
  	 \param[in]  uartChannel indicates the UART channel.
  	 \return void
  */
-void UART0_interruptEnable(UART_ChannelType uartChannel);
+void UART_interruptEnable(UART_ChannelType uartChannel);
 
 /********************************************************************************************/
 /********************************************************************************************/
@@ -95,8 +95,8 @@ void UART_putChar(UART_ChannelType uartChannel, uint8 character);
 void UART_putString(UART_ChannelType uartChannel, sint8* string);
 
 
-void UART1_disable();
+void UART3_disable();
 
-void UART1_enable();
+void UART3_enable();
 #endif /* UART_H_ */
 

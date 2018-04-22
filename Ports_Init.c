@@ -56,8 +56,7 @@ void pins_initialize() {
 void pins_interrupts() {
 	//Activamos el reloj del PIT
 	PIT_clockGating();
-	/**Enables the UART 0 interrupt*/
-	UART0_interruptEnable(UART_0);
+
 	//Asignamos las prioeridades de las interrupciones
 	//Interrupciones por desbordamiento
 	NVIC_enableInterruptAndPriotity(PIT_CH0_IRQ, PRIORITY_5);
