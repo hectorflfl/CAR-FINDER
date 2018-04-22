@@ -88,9 +88,6 @@ int main(void) {
 	LCDNokia_init();/**Inicialización del LCD NOKIA */
 
 
-
-
-
 	//LAMAR
 //UART_putString(UART_1,"ATD3929270291;\n");
 //	UART_putString(UART_1,"ATD3929270291;\n");

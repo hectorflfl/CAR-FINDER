@@ -15,11 +15,14 @@
 const static uint8 RealPassword=PASS_H;
 
 void passwordVerification(uint8 pass_detected);
+
 uint8 get_AccessStatus();
 void clear_AccessStatus();
 
+void getGPS(uint8 gps);
 
+uint8 getFlag();
 
-
+void clearArray();
 
 #endif /* PASSWORDDETECTOR_H_ */

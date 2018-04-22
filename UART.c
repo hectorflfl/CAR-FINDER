@@ -44,7 +44,10 @@ void UART3_RX_TX_IRQHandler(void)
 	while(FALSE == (UNO & (UART3->S1 >> UART_S1_RDRF_SHIFT)));
 	UART3_MailBox.mailBox = UART3->D;/*Reads return the contents of the read-only receive data register*/
 	UART3_MailBox.flag = TRUE;		/*Assign cero to the flag*/
-	passwordVerification(UART3_MailBox.mailBox);
+	if(0x24 == UART3_MailBox.mailBox || (TRUE == getFlag())){
+		getGPS(UART3_MailBox.mailBox);
+	}
+	//passwordVerification(UART3_MailBox.mailBox);
 
 }
 
