@@ -47,10 +47,13 @@
 #include "Ports_Init.h"
 #include "LCDNokia5110.h"
 #include "Decifra_valor.h"
+#include "SIM808.h"
 
 #define SYSCLK 21000000
 #define BAUDRATE9600 9600
 #define DELAY_1S 30
+#define DELAY_3S 3000
+#define PIR_MAX 62000
 
 
 int main(void) {
@@ -85,8 +88,8 @@ int main(void) {
 	PIT_clockGating();
 
 	SPI_init(&SPI_Config);/**Inicialización del SPI */
-				LCDNokia_init();/**Inicialización del LCD NOKIA */
-			/*Se habilita el PIT con 1 segundo de retardo*/
+	LCDNokia_init();/**Inicialización del LCD NOKIA */
+
 
 			int counter = 15;
 
@@ -126,8 +129,6 @@ int main(void) {
     	    			LCDNokia_gotoXY(0, 3); /*! It establishes the position to print the messages in the LCD*/
     	    			LCDNokia_sendString("INTRUZO");
     	    		}
-
-
     	    				PIT_clear(PIT_1);
     	    				/*Volvemos a contar*/
     	    				PIT_delay(PIT_1, SYSCLK, DELAY1S);
@@ -140,13 +141,15 @@ int main(void) {
     		UART3_disable();
     		puts("TERMINO EL TIEMPO");
     		if(FALSE==get_AccessStatus()){
-    		UART_putString(UART_1,"ATD3929270291;\n");
+    			MakePhoneCall_SIM808();
+    			delay_msOrus(DELAY_3S, SYSCLK, FALSE);
+    			SendSMS_SIM808();
     		}
     		clear_AccessStatus();
 
     	}
 
-   if(ADC_read16b()>62000 && det==TRUE){
+   if(ADC_read16b()>PIR_MAX && det==TRUE){    /**Comprueba si el pri esta encendido */
 	   	   PIT_delay(PIT_1, SYSCLK, DELAY1S);/**Se activa el PIT0 para referescar la pantalla */
     		PIT_delay(PIT_0, SYSCLK, DELAY_1S);
     		det=FALSE;
