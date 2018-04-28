@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 /**
  * @file    CarProtector.c
  * @brief   Application entry point.
@@ -57,28 +57,30 @@
 #define ASCII_CONVERT 0x30
 #define COUNTDOWN 15
 
-	int counter = COUNTDOWN;
+int counter = COUNTDOWN;
 
 int main(void) {
+	uint8 det = TRUE;
+
 	const SPI_ConfigType SPI_Config = { SPI_DISABLE_FIFO, SPI_LOW_POLARITY,
-												SPI_LOW_PHASE,
-												SPI_MSB,
-												SPI_0,
-												SPI_MASTER,
-												GPIO_MUX2,
-												SPI_BAUD_RATE_2,
-												SPI_FSIZE_8,
-												{ GPIO_D, BIT1, BIT2 } };
+										SPI_LOW_PHASE,
+										SPI_MSB, SPI_0,
+										SPI_MASTER,
+										GPIO_MUX2,
+										SPI_BAUD_RATE_2,
+										SPI_FSIZE_8,
+										{ GPIO_D, BIT1, BIT2 } };
+
 	pins_initialize();/**Inicialización de los pines */
 	pins_interrupts();/**Habilitación de las interrupciones de los pines */
 	//UART1----PUERTO C
 
-	uint8 det=TRUE;
 
-	UART_init(UART_1, SYSCLK, BD_9600);//UART1 SIM808
+
+	UART_init(UART_1, SYSCLK, BD_9600); //UART1 SIM808
 	UART_interruptEnable(UART_1);
 
-	UART_init(UART_3, SYSCLK, BD_9600);//UART3 BLUETOOTH
+	UART_init(UART_3, SYSCLK, BD_9600); //UART3 BLUETOOTH
 	UART_interruptEnable(UART_3);
 
 	EnableInterrupts;
@@ -87,11 +89,10 @@ int main(void) {
 	SPI_init(&SPI_Config);/**Inicialización del SPI */
 	LCDNokia_init();/**Inicialización del LCD NOKIA */
 
-
 	//LAMAR
-//UART_putString(UART_1,"ATD3929270291;\n");
-//	UART_putString(UART_1,"ATD3929270291;\n");
-//	UART1->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
+	//UART_putString(UART_1,"ATD3929270291;\n");
+	//	UART_putString(UART_1,"ATD3929270291;\n");
+	//	UART1->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
 
 	//UART_putString(UART_1,"AT+CMGF=1\r\n");
 	//UART_putString(UART_1,"AT+CMGS=\"3929270291\"\n");
@@ -99,55 +100,51 @@ int main(void) {
 	//UART_putChar(UART_1,26);
 	//UART_putString(UART_1,"\n");
 
+	while (1) {
+		if (TRUE == PIT_interruptFlagStatus(PIT_1)) {
 
-    while(1) {
-    	if (TRUE == PIT_interruptFlagStatus(PIT_1)) {
+			if (FALSE != counter) {
+				counter--;
+				obtenvalor(counter);
+				LCDNokia_clear(); /*Limpiamos la pantalla para mostrar el siguiente menú*/
+				LCDNokia_gotoXY(20, 3); /*! It establishes the position to print the messages in the LCD*/
+				if (FALSE != getDecena()) {
+					LCDNokia_sendChar(getDecena() + ASCII_CONVERT); /*! It print a string stored in an array*/
+				}
+				LCDNokia_sendChar(getUnidad() + ASCII_CONVERT); /*! It print a string stored in an array*/
+			} else {
+				LCDNokia_clear(); /*Limpiamos la pantalla para mostrar el siguiente menú*/
+				LCDNokia_gotoXY(0, 3); /*! It establishes the position to print the messages in the LCD*/
+				LCDNokia_sendString("INTRUZO");
+			}
+			PIT_clear(PIT_1);
+			PIT_delay(PIT_1, SYSCLK, DELAY1S);
+		}
 
-    	    		if(FALSE != counter){
-    	    			counter--;
-    	    			obtenvalor(counter);
-    	    			LCDNokia_clear();		/*Limpiamos la pantalla para mostrar el siguiente menú*/
-    	    			LCDNokia_gotoXY(20, 3); /*! It establishes the position to print the messages in the LCD*/
-    	    			if(FALSE != getDecena()){
-    	    				LCDNokia_sendChar(getDecena() + ASCII_CONVERT); /*! It print a string stored in an array*/
-    	    			}
-    	    			LCDNokia_sendChar(getUnidad() + ASCII_CONVERT); /*! It print a string stored in an array*/
-    	    		}else{
-    	    			LCDNokia_clear();		/*Limpiamos la pantalla para mostrar el siguiente menú*/
-    	    			LCDNokia_gotoXY(0, 3); /*! It establishes the position to print the messages in the LCD*/
-    	    			LCDNokia_sendString("INTRUZO");
-    	    		}
-    	    				PIT_clear(PIT_1);
-    	    				PIT_delay(PIT_1, SYSCLK, DELAY1S);
-    	    			}
+		if (PIT_interruptFlagStatus(PIT_0) == TRUE) {
+			PIT_clear(PIT_0);
+			PIT_disabled(PIT_0);
+			det = TRUE;
+			UART3_disable();
+			puts("TERMINO EL TIEMPO");
+			if (FALSE == get_AccessStatus()) {
+				MakePhoneCall_SIM808();
+				delay_msOrus(DELAY_3S, SYSCLK, FALSE);
+				SendSMS_SIM808();
+			}
+			clear_AccessStatus();
 
-  if(PIT_interruptFlagStatus(PIT_0)==TRUE){
-    		PIT_clear(PIT_0);
-    		PIT_disabled(PIT_0);
-    		det=TRUE;
-    		UART3_disable();
-    		puts("TERMINO EL TIEMPO");
-    		if(FALSE==get_AccessStatus()){
-    			MakePhoneCall_SIM808();
-    			delay_msOrus(DELAY_3S, SYSCLK, FALSE);
-    			SendSMS_SIM808();
-    		}
-    		clear_AccessStatus();
+		}
 
-    	}
+		if (ADC_read16b() > PIR_MAX && det == TRUE) { /**Comprueba si el PIR esta encendido */
+			PIT_delay(PIT_1, SYSCLK, DELAY1S);/**Se activa el PIT0 para referescar la pantalla */
+			PIT_delay(PIT_0, SYSCLK, DELAY_1S);
+			det = FALSE;
+			UART3_enable();
 
-   if(ADC_read16b()>PIR_MAX && det==TRUE){    /**Comprueba si el pri esta encendido */
-	   	   PIT_delay(PIT_1, SYSCLK, DELAY1S);/**Se activa el PIT0 para referescar la pantalla */
-    		PIT_delay(PIT_0, SYSCLK, DELAY_1S);
-    		det=FALSE;
-    		UART3_enable();
+		}
 
-    	}
-
-
-
-    }
-    return 0 ;
+	}
+	return 0;
 }
-
 

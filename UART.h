@@ -13,6 +13,7 @@
 
 #include "MK64F12.h"
 #include "DataTypeDefinitions.h"
+#include "GPS.h"
 
 /**
  * \brief A mail box type definition for serial port
