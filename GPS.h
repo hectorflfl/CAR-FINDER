@@ -18,4 +18,7 @@ void clearArray(void);
 uint8 getFlag(void);
 uint8* get_GPSLink ();
 
+
+void FloatToString(char *str, float f, char size);
+
 #endif /* GPS_H_ */

@@ -60,7 +60,9 @@
 int counter = COUNTDOWN;
 
 int main(void) {
-	uint8 det = TRUE;
+
+	uint8 Unlocked = TRUE;
+	uint8 Alarm =FALSE;
 
 	const SPI_ConfigType SPI_Config = { SPI_DISABLE_FIFO, SPI_LOW_POLARITY,
 										SPI_LOW_PHASE,
@@ -101,8 +103,8 @@ int main(void) {
 	//UART_putString(UART_1,"\n");
 
 	while (1) {
-		if (TRUE == PIT_interruptFlagStatus(PIT_1)) {
 
+		if (TRUE == PIT_interruptFlagStatus(PIT_1)) {
 			if (FALSE != counter) {
 				counter--;
 				obtenvalor(counter);
@@ -121,28 +123,53 @@ int main(void) {
 			PIT_delay(PIT_1, SYSCLK, DELAY1S);
 		}
 
+
+
 		if (PIT_interruptFlagStatus(PIT_0) == TRUE) {
 			PIT_clear(PIT_0);
 			PIT_disabled(PIT_0);
-			det = TRUE;
 			UART3_disable();
-			puts("TERMINO EL TIEMPO");
+
 			if (FALSE == get_AccessStatus()) {
 				MakePhoneCall_SIM808();
 				delay_msOrus(DELAY_3S, SYSCLK, FALSE);
 				SendSMS_SIM808();
+				 GPIO_setPIN(GPIO_C, BIT7);
+				Alarm=TRUE;
 			}
 			clear_AccessStatus();
 
 		}
 
-		if (ADC_read16b() > PIR_MAX && det == TRUE) { /**Comprueba si el PIR esta encendido */
+
+
+
+		if ((ADC_read16b() > PIR_MAX) && (TRUE == Unlocked)) { /**Comprueba si el PIR esta encendido */
 			PIT_delay(PIT_1, SYSCLK, DELAY1S);/**Se activa el PIT0 para referescar la pantalla */
 			PIT_delay(PIT_0, SYSCLK, DELAY_1S);
-			det = FALSE;
+			Unlocked = FALSE;
 			UART3_enable();
 
 		}
+
+
+
+
+		if(TRUE==Alarm){
+			UART3_enable();//Se activa el BBluetooth para que pueda decir la contraseña
+			if(TRUE == get_AccessStatus()){
+				//AQUI SE APAGARA LA ALARMA
+				Alarm=FALSE;
+				GPIO_setPIN(GPIO_C, BIT7);
+			}else{
+				//AQUI SE ACTIVARA UN PIT DE 2 SEG PARA ESTAR MANDANDO LA UBICACION
+			}
+		}
+
+
+
+
+
 
 	}
 	return 0;
