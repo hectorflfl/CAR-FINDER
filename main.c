@@ -46,7 +46,6 @@
 #include "SPI.h"
 #include "Ports_Init.h"
 #include "LCDNokia5110.h"
-#include "Decifra_valor.h"
 #include "SIM808.h"
 #include "TypesConverter.h"
 
@@ -62,7 +61,7 @@ int counter = COUNTDOWN;
 
 int main(void) {
 
-	uint8 Unlocked = TRUE;
+	uint8 PIR_Unlocked = TRUE;
 	uint8 Alarm =FALSE;
 
 	const SPI_ConfigType SPI_Config = { SPI_DISABLE_FIFO, SPI_LOW_POLARITY,
@@ -105,12 +104,12 @@ int main(void) {
 
 	while (1) {
 
-		 ArrayToFloat("895.456789156");
 
-
+//---------------------NOKIA LCD-------------------------------------------------------------------------------------------------
 
 
 		if (TRUE == PIT_interruptFlagStatus(PIT_1)) {
+
 			if (FALSE != counter) {
 				counter--;
 				obtenvalor(counter);
@@ -131,7 +130,12 @@ int main(void) {
 
 
 
-		if (PIT_interruptFlagStatus(PIT_0) == TRUE) {
+
+
+
+		//----------------------------------------PARTE DE LOS TIEMPOS DEL PIR----------------------------------------------
+
+		if (PIT_interruptFlagStatus(PIT_0) == TRUE) {//Una vez que se cumplen los 15 seg para decir la contraseña
 			PIT_clear(PIT_0);
 			PIT_disabled(PIT_0);
 			UART3_disable();
@@ -140,20 +144,18 @@ int main(void) {
 				MakePhoneCall_SIM808();
 				delay_msOrus(DELAY_3S, SYSCLK, FALSE);
 				SendSMS_SIM808();
-				 GPIO_setPIN(GPIO_C, BIT7);
 				Alarm=TRUE;
 			}
-			clear_AccessStatus();
+
 
 		}
 
 
 
-
-		if ((ADC_read16b() > PIR_MAX) && (TRUE == Unlocked)) { /**Comprueba si el PIR esta encendido */
-			PIT_delay(PIT_1, SYSCLK, DELAY1S);/**Se activa el PIT0 para referescar la pantalla */
-			PIT_delay(PIT_0, SYSCLK, DELAY_1S);
-			Unlocked = FALSE;
+		if ((ADC_read16b() > PIR_MAX) && (TRUE == PIR_Unlocked)) { /**Comprueba si el PIR esta encendido */
+			PIT_delay(PIT_1, SYSCLK, DELAY1S);/**Se activa el PIT1 para referescar la pantalla */
+			PIT_delay(PIT_0, SYSCLK, DELAY_1S);/**Se activa el PIT0 para dar una ventana de tiempo para la contraseña*/
+			PIR_Unlocked = FALSE;
 			UART3_enable();
 
 		}
@@ -166,7 +168,7 @@ int main(void) {
 			if(TRUE == get_AccessStatus()){
 				//AQUI SE APAGARA LA ALARMA
 				Alarm=FALSE;
-				GPIO_setPIN(GPIO_C, BIT7);
+				GPIO_clearPIN(GPIO_C, BIT7);
 			}else{
 				//AQUI SE ACTIVARA UN PIT DE 2 SEG PARA ESTAR MANDANDO LA UBICACION
 			}

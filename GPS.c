@@ -71,7 +71,6 @@ void LinkGenerator_GPS() {
 	NMEA_Longitude[8] = NMEA_Array[28];
 
 
-
 	 ArrayToFloat(NMEA_Longitude);
 	 bigvalue=(float)getIntegerValue();
 	 shortvalue=(float)getDecimalValue();
@@ -84,11 +83,21 @@ void LinkGenerator_GPS() {
 	shortvalue = (shortvalue * 100) / 60;
 	longitude = bigvalue + shortvalue;
 	 */
-	bigvalue = (int) longitude;
+
+
+
+	/*bigvalue = (int) longitude;
 	shortvalue = longitude - bigvalue;
 	shortvalue = (int) (shortvalue * 1000000);
 	itoa(bigvalue, bigvalue_string_longitude, 10);
 	itoa(shortvalue, shortvalue_string_longitude, 10);
+	*/
+
+	 bigvalue = (int) longitude;
+	shortvalue = longitude - bigvalue;
+	shortvalue = (int) (shortvalue * 1000000);
+	Integer_to_String(bigvalue_string_longitude,bigvalue);
+	Integer_to_String(shortvalue_string_longitude,shortvalue);
 
 	shortvalue = FALSE;
 	bigvalue = FALSE;
@@ -119,11 +128,18 @@ void LinkGenerator_GPS() {
 	shortvalue = (shortvalue * 100) / 60;
 	latitude = bigvalue + shortvalue;*/
 
+	/*
 	bigvalue = (int) latitude;
 	shortvalue = latitude - bigvalue;
 	shortvalue = (int) (shortvalue * 1000000);
 	itoa(bigvalue, bigvalue_string_latitude, 10);
 	itoa(shortvalue, shortvalue_string_latitude, 10);
+	*/
+	bigvalue = (int) latitude;
+	shortvalue = latitude - bigvalue;
+	shortvalue = (int) (shortvalue * 1000000);
+	Integer_to_String(bigvalue_string_latitude,bigvalue);
+	Integer_to_String(shortvalue_string_latitude,shortvalue);
 
 	//LONGITUD
 	NMEA_Link[31] = bigvalue_string_longitude[0];
