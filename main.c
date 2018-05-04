@@ -48,6 +48,7 @@
 #include "LCDNokia5110.h"
 #include "Decifra_valor.h"
 #include "SIM808.h"
+#include "TypesConverter.h"
 
 #define SYSCLK 21000000
 #define BAUDRATE9600 9600
@@ -103,6 +104,11 @@ int main(void) {
 	//UART_putString(UART_1,"\n");
 
 	while (1) {
+
+		 ArrayToFloat("895.456789156");
+
+
+
 
 		if (TRUE == PIT_interruptFlagStatus(PIT_1)) {
 			if (FALSE != counter) {
