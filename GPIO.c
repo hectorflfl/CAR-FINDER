@@ -22,6 +22,8 @@
 #define EJECUTA 0x4
 #define BotonA 0xA
 #define BotonB 0xB
+#define SYSCLK 12000000
+#define DELAY15S 30
 static uint8 PortB_flag=0;
 
 GPIO_pinControlRegisterType pinControlRegisterPORTCOFF = 0x0;
@@ -36,6 +38,8 @@ void PORTA_IRQHandler(void){
 void PORTB_IRQHandler(void){
 		GPIO_clearIRQStatus(GPIO_B);
 		GPIO_clearInterrupt(GPIO_B);
+		PIT_clear(PIT_3);//Clear PIT
+		PIT_delay(PIT_3, SYSCLK, DELAY15S);//Reactivate PIT
 		set_PortB_FlagIRQ();
 
 	}
@@ -53,6 +57,10 @@ uint8 PortB_FlagIRQ(){
 
 void set_PortB_FlagIRQ(){
 	PortB_flag=TRUE;
+}
+
+uint8 get_PortB_FlagIRQ(){
+	return PortB_flag;
 }
 
 void clear_PortB_FlagIRQ(){

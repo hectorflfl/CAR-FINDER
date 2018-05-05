@@ -6,18 +6,21 @@
  */
 
 #include "GPS.h"
+#include "GPIO.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "TypesConverter.h"
 
 uint8 NMEA_PROTOCOL_INDEX = FALSE;
-uint8 NMEA_Array[70] = { FALSE };
+uint8 NMEA_Array[50] = { FALSE };
 uint8 flag = FALSE;
 uint8 NMEA_Link[54] = "https://maps.google.com/maps?q=\n";
+uint8 enter[2]="\n";
 uint8 NMEA_Longitude[9] = { FALSE };
-uint8 NMEA_Latitude[11] = { FALSE };
+uint8 NMEA_Latitude[10] = { FALSE };
 uint8 GPSActivated = FALSE;
+
 
 void getGPS(uint8 gps_data) {
 
@@ -26,8 +29,11 @@ void getGPS(uint8 gps_data) {
 	if (NMEA_PROTOCOL_INDEX < 50) {
 		NMEA_Array[NMEA_PROTOCOL_INDEX] = gps_data;
 		NMEA_PROTOCOL_INDEX++;
-		if ((0x52 == NMEA_Array[3]) && (0x4d == NMEA_Array[4]) && (0x43 == NMEA_Array[5]) && (0x41 == gps_data)) {
+		if (('G' == NMEA_Array[3]) && ('G' == NMEA_Array[4]) && ('A' == NMEA_Array[5]) && ('1'== NMEA_Array[43])) {
 			GPSActivated = TRUE;
+			GPIO_setPIN(GPIO_B,BIT3);
+		}else if((0x52 == NMEA_Array[3]) && (0x4d == NMEA_Array[4]) && (0x43 == NMEA_Array[5]) && (LETTER_V == gps_data)){
+			GPIO_clearPIN(GPIO_B,BIT3);
 		}
 
 	} else {
@@ -46,12 +52,12 @@ void getGPS(uint8 gps_data) {
 }
 
 void LinkGenerator_GPS() {
+
 	float bigvalue = FALSE;
 	float shortvalue = FALSE;
 	float longitude = FALSE;
 	float latitude = FALSE;
-	uint8 enter_1 = NMEA_Link[31];
-	uint8 enter_2 = NMEA_Link[32];
+
 
 	uint8 shortvalue_string_latitude[6] = { FALSE };
 	uint8 bigvalue_string_latitude[3] = { FALSE };
@@ -59,30 +65,29 @@ void LinkGenerator_GPS() {
 	uint8 shortvalue_string_longitude[6] = { FALSE };
 	uint8 bigvalue_string_longitude[2] = { FALSE };
 
-	NMEA_Longitude[0] = NMEA_Array[20];
-	NMEA_Longitude[1] = NMEA_Array[21];
+	NMEA_Longitude[0] = NMEA_Array[18];
+	NMEA_Longitude[1] = NMEA_Array[19];
 
-	NMEA_Longitude[2] = NMEA_Array[22];
-	NMEA_Longitude[3] = NMEA_Array[23];
-	NMEA_Longitude[4] = NMEA_Array[24];
-	NMEA_Longitude[5] = NMEA_Array[25];
-	NMEA_Longitude[6] = NMEA_Array[26];
-	NMEA_Longitude[7] = NMEA_Array[27];
-	NMEA_Longitude[8] = NMEA_Array[28];
+	NMEA_Longitude[2] = NMEA_Array[20];
+	NMEA_Longitude[3] = NMEA_Array[21];
+	NMEA_Longitude[4] = NMEA_Array[22];
+	NMEA_Longitude[5] = NMEA_Array[23];
+	NMEA_Longitude[6] = NMEA_Array[24];
+	NMEA_Longitude[7] = NMEA_Array[25];
+	NMEA_Longitude[8] = NMEA_Array[26];
 
 
 	 ArrayToFloat(NMEA_Longitude);
 	 bigvalue=(float)getIntegerValue();
 	 shortvalue=(float)getDecimalValue();
-	 shortvalue = (shortvalue * 100) / 60;
+	 shortvalue=shortvalue/10000;
 	 longitude=bigvalue+shortvalue;
 
-	/*longitude = atof(NMEA_Longitude);
 	bigvalue = (int) longitude / 100;
 	shortvalue = (longitude / 100) - bigvalue;
 	shortvalue = (shortvalue * 100) / 60;
 	longitude = bigvalue + shortvalue;
-	 */
+
 
 
 
@@ -102,25 +107,30 @@ void LinkGenerator_GPS() {
 	shortvalue = FALSE;
 	bigvalue = FALSE;
 
-	NMEA_Latitude[0] = NMEA_Array[32];
-	NMEA_Latitude[1] = NMEA_Array[33];
-	NMEA_Latitude[2] = NMEA_Array[34];
-	NMEA_Latitude[3] = NMEA_Array[35];
-	NMEA_Latitude[4] = NMEA_Array[36];
-	NMEA_Latitude[5] = NMEA_Array[37];
-	NMEA_Latitude[6] = NMEA_Array[38];
-	NMEA_Latitude[7] = NMEA_Array[39];
-	NMEA_Latitude[8] = NMEA_Array[40];
-	NMEA_Latitude[9] = NMEA_Array[41];
-	NMEA_Latitude[10] = NMEA_Array[42];
+	NMEA_Latitude[0] = NMEA_Array[30];
+	NMEA_Latitude[1] = NMEA_Array[31];
+	NMEA_Latitude[2] = NMEA_Array[32];
+	NMEA_Latitude[3] = NMEA_Array[33];
+	NMEA_Latitude[4] = NMEA_Array[34];
+	NMEA_Latitude[5] = NMEA_Array[35];
+	NMEA_Latitude[6] = NMEA_Array[36];
+	NMEA_Latitude[7] = NMEA_Array[37];
+	NMEA_Latitude[8] = NMEA_Array[38];
+	NMEA_Latitude[9] = NMEA_Array[39];
+	//NMEA_Latitude[10] = NMEA_Array[40];
 
 
 
 	ArrayToFloat(NMEA_Latitude);
 	bigvalue=(float)getIntegerValue();
 	shortvalue=(float)getDecimalValue();
-	shortvalue = (shortvalue * 100) / 60;
-	latitude=bigvalue+shortvalue;
+	shortvalue=shortvalue/10000;
+	 latitude=bigvalue+shortvalue;
+
+		bigvalue = (int) latitude / 100;
+		shortvalue = (latitude / 100) - bigvalue;
+		shortvalue = (shortvalue * 100) / 60;
+		latitude = bigvalue + shortvalue;
 
 	/*latitude = atof(NMEA_Latitude);
 	bigvalue = (int) latitude / 100;
@@ -168,18 +178,23 @@ void LinkGenerator_GPS() {
 	NMEA_Link[49] = shortvalue_string_latitude[3];
 	NMEA_Link[50] = shortvalue_string_latitude[4];
 	NMEA_Link[51] = shortvalue_string_latitude[5];
-	NMEA_Link[52] = enter_1;
-	NMEA_Link[53] = enter_2;
+	NMEA_Link[52] = enter[0];
+	NMEA_Link[53] = enter[1];
+	SendSMS_SIM808();
 
 }
 
 void clearArray() {
-	for (int NMEA_Counter = 0; NMEA_Counter < 69; NMEA_Counter++) {
+	for (int NMEA_Counter = 0; NMEA_Counter < 49; NMEA_Counter++) {
 		NMEA_Array[NMEA_Counter] = FALSE;
 	}
 }
 
 uint8 getFlag() {
 	return flag;
+}
+
+uint8* get_GPSLink (){
+	return NMEA_Link;
 }
 

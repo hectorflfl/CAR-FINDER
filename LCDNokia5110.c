@@ -8,9 +8,19 @@
 #include "GPIO.h"
 #include "SPI.h"
 #include "LCDNokia5110.h"
+#include "PIT.h"
+#include "LCDNokia5110Images.h"
+#include "TypesConverter.h"
 
 #define DATA_SENDING 1
 #define NO_DATA_SENDING 0
+#define COUNTDOWN 15
+#define ASCII_CONVERT 0x30
+
+static int counter = COUNTDOWN;
+
+extern const uint8 WELCOME[];
+extern const uint8 BLOQUED[];
 
 static const uint8 ASCII[][5] =
 {
@@ -220,3 +230,23 @@ void LCD_delay(void)
 	}
 }
 
+void StartCountDown(){
+	if(FALSE != counter){//Start the countdown to validate the password
+		counter--;
+	  	obtenvalor(counter);
+	  	LCDNokia_clear();		//Limpiamos la pantalla para mostrar el siguiente menú
+	  	LCDNokia_gotoXY(20, 3); //! It establishes the position to print the messages in the LCD
+	  		if(FALSE != getDecena()){
+	  			LCDNokia_sendChar(getDecena() + ASCII_CONVERT); //! It print a string stored in an array
+	    	}
+	    	    LCDNokia_sendChar(getUnidad() + ASCII_CONVERT);// ! It print a string stored in an array
+	    	}else{
+				LCDNokia_clear();		//Limpiamos la pantalla para mostrar el siguiente menú
+				LCDNokia_gotoXY(0, 3); //! It establishes the position to print the messages in the LCD
+				LCDNokia_bitmap(&BLOQUED[0]);//Start to read the bitmap of the phrase BLOQUED
+	    	}
+}
+
+void setCountDown(uint8 newCounter){
+	counter = newCounter;
+}

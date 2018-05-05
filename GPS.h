@@ -11,6 +11,8 @@
 #include "DataTypeDefinitions.h"
 #include "UART.h"
 
+#define LETTER_A 0x41
+#define LETTER_V 0x56
 
 void getGPS(uint8 gps_data);
 void LinkGenerator_GPS(void);

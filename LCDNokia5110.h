@@ -102,6 +102,8 @@ void LCDNokia_sendString(uint8* characters);
 
 void LCD_delay(void);
 
+void setCountDown(uint8 newCounter);
 
+void StartCountDown();
 
 #endif /* LCDNOKIA5110_H_ */

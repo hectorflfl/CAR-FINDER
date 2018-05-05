@@ -269,6 +269,8 @@ void set_PortB_FlagIRQ();
 
 void clear_PortB_FlagIRQ();
 
+uint8 get_PortB_FlagIRQ();
+
 
 
 #endif /* GPIO_H_ */

@@ -211,10 +211,10 @@ void UART_putString(UART_ChannelType uartChannel, sint8* string)
 	}
 }
 
-void UART3_disable(){
-	UART3->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
+void UART0_disable(){
+	UART0->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
 }
 
-void UART3_enable(){
-	UART3->C2 |= (UART_C2_TE_MASK | UART_C2_RE_MASK);
+void UART0_enable(){
+	UART0->C2 |= (UART_C2_TE_MASK | UART_C2_RE_MASK);
 }

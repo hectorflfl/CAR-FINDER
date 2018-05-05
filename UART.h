@@ -96,8 +96,8 @@ void UART_putChar(UART_ChannelType uartChannel, uint8 character);
 void UART_putString(UART_ChannelType uartChannel, sint8* string);
 
 
-void UART3_disable();
+void UART0_disable();
 
-void UART3_enable();
+void UART0_enable();
 #endif /* UART_H_ */
 

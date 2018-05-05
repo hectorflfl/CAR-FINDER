@@ -26,15 +26,15 @@ void pins_initialize() {
 	GPIO_clockGating(GPIO_E);
 
 	/*Declaramos variables con sus respectivas configuraciones para los puertos*/
-	GPIO_pinControlRegisterType pinControlRegisterPORTB = GPIO_MUX1 | INTR_RISING_EDGE;
+	GPIO_pinControlRegisterType pinControlRegisterPORTB = GPIO_MUX1 | INTR_FALLING_EDGE;
 	GPIO_pinControlRegisterType pin7_ControlRegister = GPIO_MUX1;
 
 	/*PushButton B0*/
-	GPIO_pinControlRegister(GPIO_B, BIT2, &pinControlRegisterPORTB);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT2);
+	GPIO_pinControlRegister(GPIO_B, BIT2, &pin7_ControlRegister);
+	GPIO_dataDirectionPIN(GPIO_B, GPIO_OUTPUT, BIT2);
 	/*PushButton B1*/
-	GPIO_pinControlRegister(GPIO_B, BIT3, &pinControlRegisterPORTB);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT3);
+	GPIO_pinControlRegister(GPIO_B, BIT3, &pin7_ControlRegister);
+	GPIO_dataDirectionPIN(GPIO_B, GPIO_OUTPUT, BIT3);
 	/*PushButton B2*/
 	GPIO_pinControlRegister(GPIO_B, BIT10, &pinControlRegisterPORTB);
 	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT10);
@@ -61,10 +61,11 @@ void pins_interrupts() {
 	//Interrupciones por desbordamiento
 	NVIC_enableInterruptAndPriotity(PIT_CH0_IRQ, PRIORITY_5);
 	NVIC_enableInterruptAndPriotity(PIT_CH1_IRQ, PRIORITY_7);
+	NVIC_enableInterruptAndPriotity(PIT_CH3_IRQ, PRIORITY_8);
 	NVIC_enableInterruptAndPriotity(PORTB_IRQ, PRIORITY_6);
 	NVIC_enableInterruptAndPriotity(UART0_IRQ, PRIORITY_10);
 	NVIC_enableInterruptAndPriotity(UART1_IRQ, PRIORITY_14);
-	NVIC_enableInterruptAndPriotity(UART3_IRQ, PRIORITY_13);
+	NVIC_enableInterruptAndPriotity(UART3_IRQ, PRIORITY_2);
 
 	/*Habilitamos interrupciones*/
 	EnableInterrupts;

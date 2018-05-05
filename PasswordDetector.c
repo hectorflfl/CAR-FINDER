@@ -6,6 +6,8 @@
  */
 #include "PasswordDetector.h"
 #include "stdio.h"
+#include "LCDNokia5110.h"
+#include "GPIO.h"
 
 static uint8 AccessStatus = FALSE;
 
@@ -13,6 +15,8 @@ void passwordVerification(uint8 pass_detected) {
 
 	if (pass_detected == RealPassword) {
 		AccessStatus = TRUE;
+		setCountDown(FALSE);
+
 		puts("CONTRASEÑA CORRECTA");
 
 	} else {

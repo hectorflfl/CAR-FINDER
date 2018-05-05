@@ -195,14 +195,14 @@ void Integer_to_String(uint8* direccion, int num){
 	int position = FALSE;
 
 	obtenvalor(num);
-	if(FALSE != decenamillon){direccion[position] = decenamillon;position++;}
-	if(FALSE != unidadmillon){direccion[position] = unidadmillon;position++;}
-	if(FALSE != centenamillar){direccion[position] = centenamillar;position++;}
-	if(FALSE != decenamillar){direccion[position] = decenamillar;position++;}
-	if(FALSE != unidadmillar){direccion[position] = unidadmillar;position++;}
-	if(FALSE != centena){direccion[position] = centena;position++;}
-	if(FALSE != decena){direccion[position] = decena;position++;}
-	if(FALSE != unidad){direccion[position] = unidad;}
+	if(FALSE != decenamillon){direccion[position] = decenamillon+OFFSET_ASCII;position++;}
+	if(FALSE != unidadmillon || FALSE != decenamillon){direccion[position] = unidadmillon+OFFSET_ASCII;position++;}
+	if(FALSE != centenamillar || FALSE != decenamillon || FALSE != unidadmillon){direccion[position] = centenamillar+OFFSET_ASCII;position++;}
+	if(FALSE != decenamillar || FALSE != decenamillon || FALSE != unidadmillon || FALSE != centenamillar){direccion[position] = decenamillar+OFFSET_ASCII;position++;}
+	if(FALSE != unidadmillar || FALSE != decenamillon || FALSE != unidadmillon || FALSE != centenamillar || FALSE != decenamillar){direccion[position] = unidadmillar+OFFSET_ASCII;position++;}
+	if(FALSE != centena || FALSE != decenamillon || FALSE != unidadmillon || FALSE != centenamillar || FALSE != decenamillar || FALSE != unidadmillar){direccion[position] = centena+OFFSET_ASCII;position++;}
+	if(FALSE != decena || FALSE != decenamillon || FALSE != unidadmillon || FALSE != centenamillar || FALSE != decenamillar || FALSE != unidadmillar || FALSE != centena){direccion[position] = decena+OFFSET_ASCII;position++;}
+	direccion[position] = unidad+OFFSET_ASCII;
 
 }
 
