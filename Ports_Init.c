@@ -26,31 +26,25 @@ void pins_initialize() {
 	GPIO_clockGating(GPIO_E);
 
 	/*Declaramos variables con sus respectivas configuraciones para los puertos*/
-	GPIO_pinControlRegisterType pinControlRegisterPORTB = GPIO_MUX1 | INTR_FALLING_EDGE;
+	GPIO_pinControlRegisterType pinControlRegisterPORTB = GPIO_MUX1;
+	GPIO_pinControlRegisterType pinControlRegisterP_pin26 = GPIO_MUX1 |INTR_FALLING_EDGE;
 	GPIO_pinControlRegisterType pin7_ControlRegister = GPIO_MUX1;
 	GPIO_pinControlRegisterType pinControlRegisterPORTC = GPIO_MUX1 ;
-	/*PushButton B0*/
-	GPIO_pinControlRegister(GPIO_B, BIT2, &pin7_ControlRegister);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_OUTPUT, BIT2);
-	/*PushButton B1*/
-	GPIO_pinControlRegister(GPIO_B, BIT3, &pin7_ControlRegister);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_OUTPUT, BIT3);
-	/*PushButton B2*/
-	GPIO_pinControlRegister(GPIO_B, BIT10, &pinControlRegisterPORTB);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT10);
-	/*PushButton B3*/
-	GPIO_pinControlRegister(GPIO_B, BIT11, &pinControlRegisterPORTB);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT11);
-	/*PushButton B4*/
-	GPIO_pinControlRegister(GPIO_B, BIT18, &pinControlRegisterPORTB);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT18);
-	/*PushButton B5*/
-	GPIO_pinControlRegister(GPIO_B, BIT19, &pinControlRegisterPORTB);
-	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT19);
+	/*PushButton lock */
+	GPIO_pinControlRegister(GPIO_B, BIT18, &pin7_ControlRegister);
+	GPIO_dataDirectionPIN(GPIO_B, GPIO_OUTPUT, BIT18);
+	/*PushButton GPS*/
+	GPIO_pinControlRegister(GPIO_B, BIT19, &pin7_ControlRegister);
+	GPIO_dataDirectionPIN(GPIO_B, GPIO_OUTPUT, BIT19);
+
+	GPIO_pinControlRegister(GPIO_B, BIT23, &pinControlRegisterP_pin26);
+	GPIO_dataDirectionPIN(GPIO_B, GPIO_INPUT, BIT23);
+
+
 	/*Pin de alarma-BUZZ*/
 	GPIO_pinControlRegister(GPIO_C, BIT7, &pin7_ControlRegister);
 	GPIO_dataDirectionPIN(GPIO_C, GPIO_OUTPUT, BIT7);
-
+	//PIN PIR
 	GPIO_pinControlRegister(GPIO_C, BIT0, &pinControlRegisterPORTC);
 	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT0);
 }

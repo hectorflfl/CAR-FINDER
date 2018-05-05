@@ -22,7 +22,7 @@ UART_MailBoxType UART3_MailBox;
 
 /*Función que nos ayuda a limpiar la bandera y asignar a mailbox*/
 void UART4_RX_TX_IRQHandler(void)
-{
+{//Bluetooth
 	while(FALSE == (UNO & (UART4->S1 >> UART_S1_RDRF_SHIFT)));
 	UART4_MailBox.mailBox = UART4->D;/*Reads return the contents of the read-only receive data register*/
 	UART4_MailBox.flag = TRUE;		/*Assign cero to the flag*/
@@ -40,7 +40,7 @@ void UART1_RX_TX_IRQHandler(void)
 }
 
 void UART3_RX_TX_IRQHandler(void)
-{
+{//GPS
 	while(FALSE == (UNO & (UART3->S1 >> UART_S1_RDRF_SHIFT)));
 	UART3_MailBox.mailBox = UART3->D;/*Reads return the contents of the read-only receive data register*/
 	UART3_MailBox.flag = TRUE;		/*Assign cero to the flag*/

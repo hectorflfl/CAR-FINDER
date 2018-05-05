@@ -31,9 +31,9 @@ void getGPS(uint8 gps_data) {
 		NMEA_PROTOCOL_INDEX++;
 		if (('G' == NMEA_Array[3]) && ('G' == NMEA_Array[4]) && ('A' == NMEA_Array[5]) && ('1'== NMEA_Array[43])) {
 			GPSActivated = TRUE;
-			GPIO_setPIN(GPIO_B,BIT3);
-		}else if((0x52 == NMEA_Array[3]) && (0x4d == NMEA_Array[4]) && (0x43 == NMEA_Array[5]) && (LETTER_V == gps_data)){
-			GPIO_clearPIN(GPIO_B,BIT3);
+			GPIO_setPIN(GPIO_B,BIT19);
+		}else{
+			GPIO_clearPIN(GPIO_B,BIT19);
 		}
 
 	} else {

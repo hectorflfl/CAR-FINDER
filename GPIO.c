@@ -22,7 +22,7 @@
 #define EJECUTA 0x4
 #define BotonA 0xA
 #define BotonB 0xB
-#define SYSCLK 12000000
+#define SYSCLK 21000000
 #define DELAY15S 30
 static uint8 PortB_flag=0;
 
