@@ -4,6 +4,8 @@
 
 #include "DataTypeDefinitions.h"
 
+uint8* get_welcomeLogo();
+uint8* get_bloquedLogo();
 
 
 #endif /* LCDNOKIA5110IMAGES_H_ */

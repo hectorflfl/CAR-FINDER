@@ -61,23 +61,19 @@
 #define COUNTDOWN 15
 #define  DELAY_10S 20
 
-extern const uint8 WELCOME[];
-extern const uint8 BLOQUED[];
 uint8 PIR_Unlocked = TRUE;
 uint8 Alarm = FALSE;
 int counter = COUNTDOWN;
 
 int main(void) {
 	const SPI_ConfigType SPI_Config = { SPI_DISABLE_FIFO, SPI_LOW_POLARITY,
-										SPI_LOW_PHASE, SPI_MSB, SPI_0, SPI_MASTER,
-										GPIO_MUX2,
-										SPI_BAUD_RATE_2,
-										SPI_FSIZE_8,
-										{ GPIO_D, BIT1, BIT2 } };
+			SPI_LOW_PHASE, SPI_MSB, SPI_0, SPI_MASTER,
+			GPIO_MUX2,
+			SPI_BAUD_RATE_2,
+			SPI_FSIZE_8, { GPIO_D, BIT1, BIT2 } };
 
 	pins_initialize();/**Inicialización de los pines */
 	pins_interrupts();/**Habilitación de las interrupciones de los pines */
-
 
 	UART_init(UART_1, SYSCLK, BD_9600); //UART1 SIM808
 	UART_interruptEnable(UART_1);
@@ -93,9 +89,7 @@ int main(void) {
 	PIT_clockGating();
 	SPI_init(&SPI_Config);/**Inicialización del SPI */
 	LCDNokia_init();/**Inicialización del LCD NOKIA */
-
 	UART4_disable();
-
 
 //LAMAR
 //UART_putString(UART_1,"ATD3929270291;\n");
@@ -123,8 +117,8 @@ int main(void) {
 				clear_AccessStatus();
 				PIT_disabled(PIT_3);
 				GPIO_clearPIN(GPIO_B, BIT18);//Turn off led that means anybody is in the car
-
-
+				LCDNokia_clear();
+				LCDNokia_bitmap(get_bloquedLogo());
 			}
 
 			clear_PortB_FlagIRQ();
@@ -137,23 +131,34 @@ int main(void) {
 			PIT_clear(PIT_0);
 			PIT_disabled(PIT_0);
 
-			if (FALSE == get_AccessStatus()) {
+			if (FALSE == get_AccessStatus()) {	//Constraseña incorrecta
 				MakePhoneCall_SIM808();
 				delay_msOrus(DELAY_3S, SYSCLK, FALSE);
 				SendSMS_SIM808();
 				Alarm = TRUE;
-			}
+				LCDNokia_clear();
+				LCDNokia_bitmap(get_bloquedLogo());
 
+
+			} else {	//Contraseña correcta
+				LCDNokia_clear();
+				LCDNokia_bitmap(get_welcomeLogo());
+
+
+			}
+			PIT_disabled(PIT_1);
+			PIT_clear(PIT_1);	//Clear PIT
 			clear_PortB_FlagIRQ();
 
 		}
 
 		if ((TRUE == GPIO_readPIN(GPIO_C, BIT0)) && (TRUE == PIR_Unlocked)) { /**Comprueba si el PIR esta encendido */
-			PIT_delay(PIT_1, SYSCLK, DELAY_15S);/**Se activa el PIT1 para referescar la pantalla */
+			setCountDown(15);
+			PIT_delay(PIT_1, SYSCLK, DELAY1S);/**Se activa el PIT1 para referescar la pantalla */
 			PIT_delay(PIT_0, SYSCLK, DELAY_15S);/**Se activa el PIT0 para dar una ventana de tiempo para la contraseÃ±a*/
 			PIR_Unlocked = FALSE;
 			UART4_enable();
-			GPIO_setPIN(GPIO_B, BIT18);//Led que indica que hay una persona dentro del carro
+			GPIO_setPIN(GPIO_B, BIT18);	//Led que indica que hay una persona dentro del carro
 		}
 
 		if (TRUE == Alarm) {
@@ -163,6 +168,9 @@ int main(void) {
 				Alarm = FALSE;
 				PIT_disabled(PIT_2);//Apago el pit que esta mandando la ubicacion gps
 				GPIO_clearPIN(GPIO_C, BIT7);
+				LCDNokia_clear();
+				LCDNokia_bitmap(get_welcomeLogo());
+				PIT_disabled(PIT_1);
 			} else {
 				//AQUI SE ACTIVARA UN PIT DE 2 SEG PARA ESTAR MANDANDO LA UBICACION
 				PIT_delay(PIT_2, SYSCLK, DELAY_30S);
@@ -171,7 +179,7 @@ int main(void) {
 		}
 
 		if (PIT_interruptFlagStatus(PIT_2) == TRUE) {
-
+			//GPS_record();
 			SendSMS_SIM808();
 			PIT_clear(PIT_2);
 			PIT_delay(PIT_2, SYSCLK, DELAY_30S);

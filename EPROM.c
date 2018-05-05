@@ -18,8 +18,7 @@
 
 uint8 data = FALSE;//**Variable global que almacena byte por byte  el dato leido*/
 uint8 readedData[PAGESIZE];//**Arreglo que almacena los datos leidos*/
-
-void ReadEPROM(uint8 highAddress, uint8 lowAddress) {
+uint8 ReadEPROM(uint8 highAddress, uint8 lowAddress) {
 
 	I2C_TX_RX_Mode(I2C_0, TRUE); //**Se configura como TX*/
 	delay(DELAY_800);//**Retado para evitar la mala interpretación de lectura*/
@@ -54,7 +53,7 @@ void ReadEPROM(uint8 highAddress, uint8 lowAddress) {
 	//**Se detiene el proceso y se lee el valor real*/
 	I2C_stop(I2C_0);
 	data = I2C_read_Byte(I2C_0);
-	printf("%c", data);
+	return data;
 
 }
 
@@ -124,6 +123,9 @@ void writeString_EPROM(uint8 *data_pointer, uint8 BytesNum, uint8 Address) {
 		data_pointer++;
 
 	}
+
+
+
 
 }
 

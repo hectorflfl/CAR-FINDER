@@ -239,12 +239,8 @@ void StartCountDown(){
 	  		if(FALSE != getDecena()){
 	  			LCDNokia_sendChar(getDecena() + ASCII_CONVERT); //! It print a string stored in an array
 	    	}
-	    	    LCDNokia_sendChar(getUnidad() + ASCII_CONVERT);// ! It print a string stored in an array
-	    	}else{
-				LCDNokia_clear();		//Limpiamos la pantalla para mostrar el siguiente menú
-				LCDNokia_gotoXY(0, 3); //! It establishes the position to print the messages in the LCD
-				LCDNokia_bitmap(&BLOQUED[0]);//Start to read the bitmap of the phrase BLOQUED
-	    	}
+	  		 LCDNokia_sendChar(getUnidad() + ASCII_CONVERT);// ! It print a string stored in an array
+	}
 }
 
 void setCountDown(uint8 newCounter){
