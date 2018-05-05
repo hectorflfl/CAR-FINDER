@@ -42,7 +42,7 @@ typedef enum {BD_4800=4800,BD_9600=9600,BD_5600=5600, BD_115200=115200}UART_Baud
  	 \param[in]  void.
  	 \return void
  */
-void UART0_RX_TX_IRQHandler(void);
+void UART4_RX_TX_IRQHandler(void);
 void UART1_RX_TX_IRQHandler(void);
 
 //
@@ -96,8 +96,8 @@ void UART_putChar(UART_ChannelType uartChannel, uint8 character);
 void UART_putString(UART_ChannelType uartChannel, sint8* string);
 
 
-void UART0_disable();
+void UART4_disable();
 
-void UART0_enable();
+void UART4_enable();
 #endif /* UART_H_ */
 

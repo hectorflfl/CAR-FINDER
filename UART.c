@@ -16,17 +16,17 @@
 #define GET8 0x08
 
 /**This is mail box to received the information from the serial port*/
-UART_MailBoxType UART0_MailBox;
+UART_MailBoxType UART4_MailBox;
 UART_MailBoxType UART1_MailBox;
 UART_MailBoxType UART3_MailBox;
 
 /*Función que nos ayuda a limpiar la bandera y asignar a mailbox*/
-void UART0_RX_TX_IRQHandler(void)
+void UART4_RX_TX_IRQHandler(void)
 {
-	while(FALSE == (UNO & (UART0->S1 >> UART_S1_RDRF_SHIFT)));
-	UART0_MailBox.mailBox = UART0->D;/*Reads return the contents of the read-only receive data register*/
-	UART0_MailBox.flag = TRUE;		/*Assign cero to the flag*/
-	passwordVerification(UART1_MailBox.mailBox);
+	while(FALSE == (UNO & (UART4->S1 >> UART_S1_RDRF_SHIFT)));
+	UART4_MailBox.mailBox = UART4->D;/*Reads return the contents of the read-only receive data register*/
+	UART4_MailBox.flag = TRUE;		/*Assign cero to the flag*/
+	passwordVerification(UART4_MailBox.mailBox);
 
 }
 
@@ -113,7 +113,11 @@ void UART_init(UART_ChannelType uartChannel, uint32 systemClk, UART_BaudRateType
 		break;
 
 		case UART_4:
-			SIM->SCGC1 |= SIM_SCGC1_UART4_MASK;/*Activamos el reloj de la UART4*/
+			SIM->SCGC5|=SIM_SCGC5_PORTE_MASK;
+			SIM->SCGC1 |=SIM_SCGC1_UART4_MASK;
+			PORTE->PCR[25] = PORT_PCR_MUX(3);
+					/**Configures the pin control register of pin4 in PortC as UART TX*/
+			PORTE->PCR[24] = PORT_PCR_MUX(3);
 			UART4->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);/*Deshabilita el transmisor y el receptor de la UART en el registro UART4_C2 */
 			UART4->BDH |= UART_BDH_SBR_MASK & (UART_BuadRate >> GET8);/*Copiar los bits uartBaudRate[12:8] a los bits SRB del registro UARTx_BDH */
 			UART4->BDL &= ~(UART_BDL_SBR_MASK);
@@ -211,10 +215,10 @@ void UART_putString(UART_ChannelType uartChannel, sint8* string)
 	}
 }
 
-void UART0_disable(){
-	UART0->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
+void UART4_disable(){
+	UART4->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
 }
 
-void UART0_enable(){
-	UART0->C2 |= (UART_C2_TE_MASK | UART_C2_RE_MASK);
+void UART4_enable(){
+	UART4->C2 |= (UART_C2_TE_MASK | UART_C2_RE_MASK);
 }

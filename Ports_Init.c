@@ -28,7 +28,7 @@ void pins_initialize() {
 	/*Declaramos variables con sus respectivas configuraciones para los puertos*/
 	GPIO_pinControlRegisterType pinControlRegisterPORTB = GPIO_MUX1 | INTR_FALLING_EDGE;
 	GPIO_pinControlRegisterType pin7_ControlRegister = GPIO_MUX1;
-
+	GPIO_pinControlRegisterType pinControlRegisterPORTC = GPIO_MUX1 ;
 	/*PushButton B0*/
 	GPIO_pinControlRegister(GPIO_B, BIT2, &pin7_ControlRegister);
 	GPIO_dataDirectionPIN(GPIO_B, GPIO_OUTPUT, BIT2);
@@ -50,6 +50,9 @@ void pins_initialize() {
 	/*Pin de alarma-BUZZ*/
 	GPIO_pinControlRegister(GPIO_C, BIT7, &pin7_ControlRegister);
 	GPIO_dataDirectionPIN(GPIO_C, GPIO_OUTPUT, BIT7);
+
+	GPIO_pinControlRegister(GPIO_C, BIT0, &pinControlRegisterPORTC);
+	GPIO_dataDirectionPIN(GPIO_C, GPIO_INPUT, BIT0);
 }
 
 /*Función que nos permite habilitar las interrupciones del PIT y del puerto B*/
@@ -63,7 +66,7 @@ void pins_interrupts() {
 	NVIC_enableInterruptAndPriotity(PIT_CH1_IRQ, PRIORITY_7);
 	NVIC_enableInterruptAndPriotity(PIT_CH3_IRQ, PRIORITY_8);
 	NVIC_enableInterruptAndPriotity(PORTB_IRQ, PRIORITY_6);
-	NVIC_enableInterruptAndPriotity(UART0_IRQ, PRIORITY_10);
+	NVIC_enableInterruptAndPriotity(UART4_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(UART1_IRQ, PRIORITY_14);
 	NVIC_enableInterruptAndPriotity(UART3_IRQ, PRIORITY_2);
 

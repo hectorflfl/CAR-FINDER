@@ -88,11 +88,15 @@ int main(void) {
 	UART_init(UART_3, SYSCLK, BD_9600);//UART3 BLUETOOTH
 	UART_interruptEnable(UART_3);
 
+	UART_init(UART_4, SYSCLK, BD_9600);//UART3 BLUETOOTH
+	UART_interruptEnable(UART_4);
 	EnableInterrupts;
 	ADC_init();
 	PIT_clockGating();
 	SPI_init(&SPI_Config);/**Inicialización del SPI */
 	LCDNokia_init();/**Inicialización del LCD NOKIA */
+
+	UART4_disable();
 
 
 	//LAMAR
@@ -145,11 +149,11 @@ int main(void) {
 
 
 
-	if ((ADC_read16b() > PIR_MAX) && (TRUE == PIR_Unlocked)) { /**Comprueba si el PIR esta encendido */
+	if (( TRUE==GPIO_readPIN(GPIO_C, BIT0)) && (TRUE == PIR_Unlocked)) { /**Comprueba si el PIR esta encendido */
 		PIT_delay(PIT_1, SYSCLK, DELAY1S);/**Se activa el PIT1 para referescar la pantalla */
 		PIT_delay(PIT_0, SYSCLK, DELAY_1S);/**Se activa el PIT0 para dar una ventana de tiempo para la contraseÃ±a*/
 		PIR_Unlocked = FALSE;
-		UART0_enable();
+		UART4_enable();
 	}
 
 	if(TRUE==Alarm){
@@ -171,7 +175,7 @@ int main(void) {
 
 	if (PIT_interruptFlagStatus(PIT_2) == TRUE){
 
-		SendSMS_SIM808();
+		//SendSMS_SIM808();
 		PIT_clear(PIT_2);
 		PIT_delay(PIT_2, SYSCLK, DELAY_10S);
 
