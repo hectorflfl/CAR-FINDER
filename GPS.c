@@ -173,23 +173,58 @@ uint8* get_GPSLink() {
 
 void GPS_record() {
 	uint16 EPROM_lastPosition_decoder = FALSE;
-
+	uint8  linknumber=FALSE;
 
 	EPROM_lastPosition_decoder = ReadEPROM(FALSE, FALSE);
 	if (255 <= EPROM_lastPosition_decoder) {
-		clear_GPS_record();
+		clear_GPSLink_record();
 		EPROM_lastPosition_decoder = FALSE;
 	}
+	linknumber=EPROM_lastPosition_decoder;
 	EPROM_lastPosition_decoder *= 54;
-	writeString_EPROM(get_GPSLink(), 54, EPROM_lastPosition_decoder + 1);
-	EPROM_lastPosition_decoder = EPROM_lastPosition_decoder / 54;
-	EPROM_lastPosition_decoder++;
-	writeEPROM(EPROM_lastPosition_decoder, FALSE, FALSE);
+	if(FALSE==EPROM_lastPosition_decoder){
+		writeString_EPROM(get_GPSLink(), 54, EPROM_lastPosition_decoder + 1);
+	}else{
+		writeString_EPROM(get_GPSLink(), 54, EPROM_lastPosition_decoder + 2);
+	}
+	linknumber++;
+	writeEPROM(linknumber, FALSE, FALSE);
 
 }
 
-void clear_GPS_record() {
+void clear_GPSLink_record() {
 	writeEPROM(FALSE, FALSE, FALSE);
+
+}
+
+uint16 BytesNumberToRead(){
+
+	return (ReadEPROM(FALSE, FALSE)*54);
+
+}
+
+
+
+uint16 LastLinkPosition(){
+	uint16 LinksNumber=FALSE;
+	LinksNumber=ReadEPROM(FALSE, FALSE);
+	LinksNumber*=54;
+	if(FALSE==LinksNumber){
+		return FALSE;
+	}
+	else{
+		if(LinksNumber>54){
+			LinksNumber-=54;
+			LinksNumber+=2;
+		}else{
+			LinksNumber-=54;
+			LinksNumber++;
+		}
+
+		return LinksNumber;
+	}
+
+
 
 }
 

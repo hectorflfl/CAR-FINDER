@@ -20,7 +20,8 @@ void clearArray(void);
 uint8 getFlag(void);
 uint8* get_GPSLink ();
 void GPS_record();
-void clear_GPS_record();
-
+void clear_GPSLink_record();
+uint16 BytesNumberToRead();
+uint16 LastLinkPosition();
 
 #endif /* GPS_H_ */

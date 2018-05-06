@@ -14,7 +14,7 @@
 #define SHIFT4 4 //**Constate 4 que sirve para realizar barridos de bits*/
 #define FOURBITS 0XF//**Mascara para los primeros cuatro bits menos significativos*/
 #define THREEBITS 7//**Mascara para los primeros tres bits menos significativos*/
-#define PAGESIZE 100//**Tamaño del arreglo que almacena los datos leidos de la EPROM*/
+#define PAGESIZE 500//**Tamaño del arreglo que almacena los datos leidos de la EPROM*/
 #define DELAY_800 800//**Conteo de 800*/
 #define NULL_0 0X0//**Valor Nulo*/
 

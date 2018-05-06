@@ -102,26 +102,35 @@ int main(void) {
 //UART_putString(UART_1,"YES\n");
 //UART_putChar(UART_1,26);
 //UART_putString(UART_1,"\n");
-	clear_GPS_record();
 
 
-	uint8*s=ReadString_EPROM( 54, (ReadEPROM(FALSE, FALSE)*54)+1);
+/*	clear_GPSLink_record();
+
+	GPS_record();
+
+	uint8*s=ReadString_EPROM( 54,LastLinkPosition());
 	while(*s){
 		printf("%c",*s);
 		s++;
 	}
 
 	GPS_record();
-
-	GPS_record();
-	uint8*p=ReadString_EPROM( 54, (ReadEPROM(FALSE, FALSE)*54)+1);
+	uint8*p=ReadString_EPROM( 54,LastLinkPosition());
 		while(*p){
 			printf("%c",*p);
 			p++;
 		}
 
 
+	GPS_record();
+	uint8*t=ReadString_EPROM( 54,LastLinkPosition());
+				while(*t){
+					printf("%c",*t);
+					t++;
+				}
+	uint16 num =BytesNumberToRead();
 
+*/
 
 	while (TRUE) {
 
