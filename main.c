@@ -89,6 +89,7 @@ int main(void) {
 	PIT_clockGating();
 	SPI_init(&SPI_Config);/**Inicialización del SPI */
 	LCDNokia_init();/**Inicialización del LCD NOKIA */
+	I2C_init(FALSE);
 	UART4_disable();
 
 //LAMAR
@@ -101,6 +102,26 @@ int main(void) {
 //UART_putString(UART_1,"YES\n");
 //UART_putChar(UART_1,26);
 //UART_putString(UART_1,"\n");
+	clear_GPS_record();
+
+
+	uint8*s=ReadString_EPROM( 54, (ReadEPROM(FALSE, FALSE)*54)+1);
+	while(*s){
+		printf("%c",*s);
+		s++;
+	}
+
+	GPS_record();
+
+	GPS_record();
+	uint8*p=ReadString_EPROM( 54, (ReadEPROM(FALSE, FALSE)*54)+1);
+		while(*p){
+			printf("%c",*p);
+			p++;
+		}
+
+
+
 
 	while (TRUE) {
 
@@ -179,7 +200,7 @@ int main(void) {
 		}
 
 		if (PIT_interruptFlagStatus(PIT_2) == TRUE) {
-			//GPS_record();
+
 			SendSMS_SIM808();
 			PIT_clear(PIT_2);
 			PIT_delay(PIT_2, SYSCLK, DELAY_30S);

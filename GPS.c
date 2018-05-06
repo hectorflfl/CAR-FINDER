@@ -176,15 +176,13 @@ void GPS_record() {
 
 
 	EPROM_lastPosition_decoder = ReadEPROM(FALSE, FALSE);
-	EPROM_lastPosition_decoder -= 0X30;
-	if (8 <= EPROM_lastPosition_decoder) {
+	if (255 <= EPROM_lastPosition_decoder) {
 		clear_GPS_record();
 		EPROM_lastPosition_decoder = FALSE;
 	}
 	EPROM_lastPosition_decoder *= 54;
 	writeString_EPROM(get_GPSLink(), 54, EPROM_lastPosition_decoder + 1);
 	EPROM_lastPosition_decoder = EPROM_lastPosition_decoder / 54;
-	EPROM_lastPosition_decoder += 0X30;
 	EPROM_lastPosition_decoder++;
 	writeEPROM(EPROM_lastPosition_decoder, FALSE, FALSE);
 
