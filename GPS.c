@@ -19,7 +19,7 @@ uint8 flag = FALSE;
 uint8 NMEA_Link[54] = "https://maps.google.com/maps?q=\n";
 uint8 enter[2] = "\n";
 uint8 NMEA_Longitude[9] = { FALSE };
-uint8 NMEA_Latitude[10] = { FALSE };
+uint8 NMEA_Latitude[11] = { FALSE };
 uint8 GPSActivated = FALSE;
 
 void getGPS(uint8 gps_data) {
@@ -33,8 +33,6 @@ void getGPS(uint8 gps_data) {
 				&& ('A' == NMEA_Array[5]) && ('1' == NMEA_Array[43])) {
 			GPSActivated = TRUE;
 			GPIO_setPIN(GPIO_B, BIT19);
-		} else {
-			GPIO_clearPIN(GPIO_B, BIT19);
 		}
 
 	} else {
@@ -45,6 +43,10 @@ void getGPS(uint8 gps_data) {
 			GPSActivated = FALSE;
 
 		} else {
+			if(('G' == NMEA_Array[3]) && ('G' == NMEA_Array[4])
+							&& ('A' == NMEA_Array[5]) && ('1' != NMEA_Array[43])){
+						GPIO_clearPIN(GPIO_B, BIT19);
+			}
 			flag = FALSE;
 			NMEA_PROTOCOL_INDEX = FALSE;
 			clearArray();
@@ -107,7 +109,7 @@ void LinkGenerator_GPS() {
 	NMEA_Latitude[8] = NMEA_Array[38];
 	NMEA_Latitude[9] = NMEA_Array[39];
 
-	ArrayToFloat(NMEA_Latitude);
+	ArrayToFloat(&NMEA_Latitude[0]);
 	bigvalue = (float) getIntegerValue();
 	shortvalue = (float) getDecimalValue();
 	shortvalue = shortvalue / 10000;
@@ -153,7 +155,6 @@ void LinkGenerator_GPS() {
 	NMEA_Link[51] = shortvalue_string_latitude[5];
 	NMEA_Link[52] = enter[0];
 	NMEA_Link[53] = enter[1];
-//	SendSMS_SIM808();
 
 }
 

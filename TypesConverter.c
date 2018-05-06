@@ -8,14 +8,6 @@
 #include "DataTypeDefinitions.h"
 #include "TypesConverter.h"
 
-#define OFFSET_ASCII 48
-#define TEN_VALUE 10
-#define DECIMAL_COUNTER_INIT -1
-
-
-
-
-
 static uint8 unidad = FALSE;		/*Variable que contendra las unidades de la frecuencia*/
 static uint8 decena = FALSE;		/*Variable que contendra las decenas de la frecuencia*/
 static uint8 centena = FALSE;		/*Variable que contendra las centenas de la frecuencia*/
@@ -52,7 +44,7 @@ uint32 TenPow(uint32 data, uint8 pow) {
 void ArrayToFloat(uint8*dataPointer) {
 	integerValue=FALSE;
 	decimalValue=FALSE;
-	uint8 DecimalCounter = DECIMAL_COUNTER_INIT;
+	sint8 DecimalCounter = DECIMAL_COUNTER_INIT;
 	uint8 IntegerCounter = FALSE;
 	uint8 DotFlag = FALSE;
 	uint8 ArrayLength = FALSE;

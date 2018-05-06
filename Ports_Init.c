@@ -24,6 +24,8 @@ void pins_initialize() {
 	GPIO_clockGating(GPIO_C);
 	GPIO_clockGating(GPIO_D);
 	GPIO_clockGating(GPIO_E);
+	//Activamos el reloj del PIT
+	PIT_clockGating();
 
 	/*Declaramos variables con sus respectivas configuraciones para los puertos*/
 	GPIO_pinControlRegisterType pinControlRegisterPORTB = GPIO_MUX1;
@@ -51,8 +53,6 @@ void pins_initialize() {
 
 /*Función que nos permite habilitar las interrupciones del PIT y del puerto B*/
 void pins_interrupts() {
-	//Activamos el reloj del PIT
-	PIT_clockGating();
 
 	//Asignamos las prioeridades de las interrupciones
 	//Interrupciones por desbordamiento
@@ -61,6 +61,7 @@ void pins_interrupts() {
 	NVIC_enableInterruptAndPriotity(PIT_CH3_IRQ, PRIORITY_8);
 	NVIC_enableInterruptAndPriotity(PORTB_IRQ, PRIORITY_6);
 	NVIC_enableInterruptAndPriotity(UART4_IRQ, PRIORITY_4);
+	NVIC_enableInterruptAndPriotity(UART0_IRQ, PRIORITY_15);
 	NVIC_enableInterruptAndPriotity(UART1_IRQ, PRIORITY_14);
 	NVIC_enableInterruptAndPriotity(UART3_IRQ, PRIORITY_2);
 

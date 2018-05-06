@@ -50,6 +50,8 @@
 #include "SIM808.h"
 #include "LCDNokia5110Images.h"
 #include "TypesConverter.h"
+#include "UART_TERMINAL.h"
+#include "I2C.h"
 
 #define SYSCLK 21000000
 #define BAUDRATE9600 9600
@@ -75,10 +77,15 @@ int main(void) {
 	pins_initialize();/**Inicialización de los pines */
 	pins_interrupts();/**Habilitación de las interrupciones de los pines */
 
+
+	UART_init (UART_0, SYSCLK, BD_9600);//UART0 TERATERM
+	UART_interruptEnable(UART_0);
+	show_menu();
+
 	UART_init(UART_1, SYSCLK, BD_9600); //UART1 SIM808
 	UART_interruptEnable(UART_1);
 
-	UART_init(UART_3, SYSCLK, BD_9600); //UART3 BLUETOOTH
+	UART_init(UART_3, SYSCLK, BD_9600); //UART3 GPS
 	UART_interruptEnable(UART_3);
 
 	UART_init(UART_4, SYSCLK, BD_9600); //UART4 BLUETOOTH
@@ -92,45 +99,13 @@ int main(void) {
 	I2C_init(FALSE);
 	UART4_disable();
 
-//LAMAR
-//UART_putString(UART_1,"ATD3929270291;\n");
-//	UART_putString(UART_1,"ATD3929270291;\n");
-//	UART1->C2 &= ~(UART_C2_TE_MASK | UART_C2_RE_MASK);
-
-//UART_putString(UART_1,"AT+CMGF=1\r\n");
-//UART_putString(UART_1,"AT+CMGS=\"3929270291\"\n");
-//UART_putString(UART_1,"YES\n");
-//UART_putChar(UART_1,26);
-//UART_putString(UART_1,"\n");
 
 
-/*	clear_GPSLink_record();
-
-	GPS_record();
-
-	uint8*s=ReadString_EPROM( 54,LastLinkPosition());
-	while(*s){
-		printf("%c",*s);
-		s++;
-	}
-
-	GPS_record();
-	uint8*p=ReadString_EPROM( 54,LastLinkPosition());
-		while(*p){
-			printf("%c",*p);
-			p++;
-		}
 
 
-	GPS_record();
-	uint8*t=ReadString_EPROM( 54,LastLinkPosition());
-				while(*t){
-					printf("%c",*t);
-					t++;
-				}
-	uint16 num =BytesNumberToRead();
 
-*/
+
+
 
 	while (TRUE) {
 
@@ -168,6 +143,9 @@ int main(void) {
 				Alarm = TRUE;
 				LCDNokia_clear();
 				LCDNokia_bitmap(get_bloquedLogo());
+				if(TRUE == GPIO_readPIN(GPIO_B,BIT19)){
+					GPS_record();
+				}
 
 
 			} else {	//Contraseña correcta
@@ -208,9 +186,11 @@ int main(void) {
 			}
 		}
 
-		if (PIT_interruptFlagStatus(PIT_2) == TRUE) {
-
+		if (PIT_interruptFlagStatus(PIT_2) == TRUE) {//Send msm
 			SendSMS_SIM808();
+			if(TRUE == GPIO_readPIN(GPIO_B,BIT19)){
+				GPS_record();
+			}
 			PIT_clear(PIT_2);
 			PIT_delay(PIT_2, SYSCLK, DELAY_30S);
 

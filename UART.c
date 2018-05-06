@@ -9,27 +9,34 @@
 #include "PasswordDetector.h"
 #include "MK64F12.h"
 #include "GlobalFunctions.h"
+#include "UART_TERMINAL.h"
 
 
 
-#define UNO 0x01
-#define GET8 0x08
 
 /**This is mail box to received the information from the serial port*/
-UART_MailBoxType UART4_MailBox;
+UART_MailBoxType UART0_MailBox;
 UART_MailBoxType UART1_MailBox;
 UART_MailBoxType UART3_MailBox;
+UART_MailBoxType UART4_MailBox;
 
-/*Función que nos ayuda a limpiar la bandera y asignar a mailbox*/
-void UART4_RX_TX_IRQHandler(void)
-{//Bluetooth
-	while(FALSE == (UNO & (UART4->S1 >> UART_S1_RDRF_SHIFT)));
-	UART4_MailBox.mailBox = UART4->D;/*Reads return the contents of the read-only receive data register*/
-	UART4_MailBox.flag = TRUE;		/*Assign cero to the flag*/
-	passwordVerification(UART4_MailBox.mailBox);
+
+//Teraterm
+void UART0_RX_TX_IRQHandler(void)
+{
+	while(FALSE == (UNO & (UART0->S1 >> UART_S1_RDRF_SHIFT)));
+	UART0_MailBox.mailBox = UART0->D;/*Reads return the contents of the read-only receive data register*/
+	UART0_MailBox.flag = TRUE;		/*Assign cero to the flag*/
+
+
+	if(ASCII_ENTER == UART0_MailBox.mailBox){
+		showmemory();
+							/*Read all the directions*/
+	}
 
 }
 
+//SIM808
 void UART1_RX_TX_IRQHandler(void)
 {
 	while(FALSE == (UNO & (UART1->S1 >> UART_S1_RDRF_SHIFT)));
@@ -48,6 +55,16 @@ void UART3_RX_TX_IRQHandler(void)
 		getGPS(UART3_MailBox.mailBox);
 	}
 	//passwordVerification(UART3_MailBox.mailBox);
+
+}
+
+/*Función que nos ayuda a limpiar la bandera y asignar a mailbox*/
+void UART4_RX_TX_IRQHandler(void)
+{//Bluetooth
+	while(FALSE == (UNO & (UART4->S1 >> UART_S1_RDRF_SHIFT)));
+	UART4_MailBox.mailBox = UART4->D;/*Reads return the contents of the read-only receive data register*/
+	UART4_MailBox.flag = TRUE;		/*Assign cero to the flag*/
+	passwordVerification(UART4_MailBox.mailBox);
 
 }
 
@@ -213,6 +230,17 @@ void UART_putString(UART_ChannelType uartChannel, sint8* string)
 		/**Transmit one char*/
 		UART_putChar(uartChannel, *string++);
 	}
+}
+
+void UART_WriteLink(UART_ChannelType uartChannel, sint8* string, uint8 length){
+	/**Transmit each char until the end symbol is found*/
+
+		while (length)
+		{
+			/**Transmit one char*/
+			UART_putChar(uartChannel, *string++);
+			length--;
+		}
 }
 
 void UART4_disable(){

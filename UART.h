@@ -15,6 +15,9 @@
 #include "DataTypeDefinitions.h"
 #include "GPS.h"
 
+#define UNO 0x01
+#define GET8 0x08
+
 /**
  * \brief A mail box type definition for serial port
  */
@@ -23,6 +26,24 @@ typedef struct{
 	uint8 mailBox; /** it contains the received data*/
 } UART_MailBoxType;
 
+/*Enumeration to use ascci */
+typedef enum{
+			ASCII_ENTER = 13,
+			ASCII_ESC = 27,
+			ASCII_NUMBER_0 = 48,
+			ASCII_NUMBER_1 = 49,
+			ASCII_NUMBER_2 = 50,
+			ASCII_NUMBER_3 = 51,
+			ASCII_NUMBER_4 = 52,
+			ASCII_NUMBER_5 = 53,
+			ASCII_NUMBER_6 = 54,
+			ASCII_NUMBER_7 = 55,
+			ASCII_NUMBER_8 = 56,
+			ASCII_NUMBER_9 = 57,
+			ASCII_NUMBER_10 = 50,
+			ASCII_58_Symbol = 58,
+
+}Keys;
 
 /**
  * \brief This enum define the UART port to be used.
@@ -99,5 +120,8 @@ void UART_putString(UART_ChannelType uartChannel, sint8* string);
 void UART4_disable();
 
 void UART4_enable();
+
+void UART_WriteLink(UART_ChannelType uartChannel, sint8* string, uint8 length);
+
 #endif /* UART_H_ */
 

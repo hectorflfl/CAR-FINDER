@@ -20,10 +20,14 @@
 #define CENTENAMILLAR_VALOR 100000
 #define UNIDADMILLON_VALOR 1000000
 #define DECENAMILLON_VALOR 10000000
+#define OFFSET_ASCII 48
+#define TEN_VALUE 10
+#define DECIMAL_COUNTER_INIT -1
+
 
 
 uint32 TenPow(uint32 data, uint8 pow);
-void ArrayToFloat(uint8*dataPointer);
+void ArrayToFloat(uint8* dataPointer);
 uint16 getIntegerValue();
 uint32 getDecimalValue();
 
