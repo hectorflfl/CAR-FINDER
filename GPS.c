@@ -155,6 +155,8 @@ void LinkGenerator_GPS() {
 	NMEA_Link[51] = shortvalue_string_latitude[5];
 	NMEA_Link[52] = enter[0];
 	NMEA_Link[53] = enter[1];
+	//SendSMS_SIM808();
+	GPS_record();
 
 }
 

@@ -98,8 +98,9 @@ int main(void) {
 	LCDNokia_init();/**Inicialización del LCD NOKIA */
 	I2C_init(FALSE);
 	UART4_disable();
-
-
+	clear_GPSLink_record();
+	//Clear LCD
+	LCDNokia_clear();
 
 
 

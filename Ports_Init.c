@@ -62,7 +62,7 @@ void pins_interrupts() {
 	NVIC_enableInterruptAndPriotity(PORTB_IRQ, PRIORITY_6);
 	NVIC_enableInterruptAndPriotity(UART4_IRQ, PRIORITY_4);
 	NVIC_enableInterruptAndPriotity(UART0_IRQ, PRIORITY_15);
-	NVIC_enableInterruptAndPriotity(UART1_IRQ, PRIORITY_14);
+	NVIC_enableInterruptAndPriotity(UART1_IRQ, PRIORITY_1);
 	NVIC_enableInterruptAndPriotity(UART3_IRQ, PRIORITY_2);
 
 	/*Habilitamos interrupciones*/
