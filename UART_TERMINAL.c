@@ -34,20 +34,11 @@ void show_menu(){
 
 /*Función que imprime en la terminal la primera parte del submenu de leer memoria*/
 void showmemory(){
-
-	uint8 *punt;
-	uint16 length=FALSE;
-	length = BytesNumberToRead();
-
 	UART_putString(UART_0,"\033[0;37;47m");/*0 = Reset all atributes, 37 = White, 47 = white*/
 	UART_putString(UART_0,"\033[2J");/*VT100 command for clearing the screen*/
 	UART_putString(UART_0,"\033[0;30;47m");/** VT100 command for text in red and background in green*/
 	UART_putString(UART_0,"\033[5;10H");/** VT100 command for positioning the cursor in x and y position*/
-
-	UART_WriteLink(UART_0, ReadString_EPROM(length, TRUE),length);
-
-
-
+	UART_WriteLink(UART_0, ReadString_EPROM(162, 53),162);
 }
 
 

@@ -31,7 +31,7 @@ void UART0_RX_TX_IRQHandler(void)
 
 	if(ASCII_ENTER == UART0_MailBox.mailBox){
 		showmemory();
-							/*Read all the directions*/
+						/*Read all the directions*/
 	}
 
 }

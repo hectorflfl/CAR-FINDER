@@ -30,23 +30,23 @@ GPIO_pinControlRegisterType pinControlRegisterPORTCOFF = 0x0;
 
 //Interrupción del puerto A (MOTOR)
 void PORTA_IRQHandler(void){
-		GPIO_clearIRQStatus(GPIO_A);
-		GPIO_clearInterrupt(GPIO_A);
+		GPIO_clearIRQStatus(GPIO_A);		//Clear interrupt status
+		GPIO_clearInterrupt(GPIO_A);		//Clear interrupt
 
 	}
 //Interrupción de los push buttons
 void PORTB_IRQHandler(void){
-		GPIO_clearIRQStatus(GPIO_B);
-		GPIO_clearInterrupt(GPIO_B);
-		PIT_clear(PIT_3);//Clear PIT
-		PIT_delay(PIT_3, SYSCLK, DELAY15S);//Reactivate PIT
-		set_PortB_FlagIRQ();
+		GPIO_clearIRQStatus(GPIO_B);		//Clear interrupt status
+		GPIO_clearInterrupt(GPIO_B);		//Clear interrupt
+		PIT_clear(PIT_3);					//Clear PIT
+		PIT_delay(PIT_3, SYSCLK, DELAY15S);//Activate PIT to set the alarnm
+		set_PortB_FlagIRQ();				//Set the flag of the portB
 
 	}
 //Interrupción del puerto C (SEÑALES)
 void PORTC_IRQHandler(void){
-		GPIO_clearIRQStatus(GPIO_C);
-		GPIO_clearInterrupt(GPIO_C);
+		GPIO_clearIRQStatus(GPIO_C);		//Clear interrupt status
+		GPIO_clearInterrupt(GPIO_C);		//Clear interrupt
 
 	}
 

@@ -8,32 +8,30 @@
 #include "DataTypeDefinitions.h"
 #include "TypesConverter.h"
 
-static uint8 unidad = FALSE;		/*Variable que contendra las unidades de la frecuencia*/
-static uint8 decena = FALSE;		/*Variable que contendra las decenas de la frecuencia*/
-static uint8 centena = FALSE;		/*Variable que contendra las centenas de la frecuencia*/
-static uint8 unidadmillar = FALSE; /*Variable que contendra las unidades de milar de la frecuencia*/
-static uint8 decenamillar = FALSE; /*Variable que contendra las unidades de millar de la frecuencia*/
-static uint8 centenamillar = FALSE;
-static uint8 unidadmillon = FALSE;
-static uint8 decenamillon = FALSE;
+static uint8 unidad = FALSE;		/*Variable que contendra las unidades*/
+static uint8 decena = FALSE;		/*Variable que contendra las decenas*/
+static uint8 centena = FALSE;		/*Variable que contendra las centenas*/
+static uint8 unidadmillar = FALSE; /*Variable que contendra las unidades de milar*/
+static uint8 decenamillar = FALSE; /*Variable que contendra las unidades de millar*/
+static uint8 centenamillar = FALSE;/*Variable que contendra las centenas de millar*/
+static uint8 unidadmillon = FALSE;/*Variable que contendra las unidades de millon*/
+static uint8 decenamillon = FALSE;/*Variable que contendra las decenas de millón*/
 
+static uint16 integerValue;/*Variable that contain a integer value*/
+static uint32 decimalValue;/*Variable that contin a decimal value*/
 
-
-static uint16 integerValue;
-static uint32 decimalValue;
-
-uint16 getIntegerValue() {
+uint16 getIntegerValue() {//Function that return the integer value
 
 	return integerValue;
 
 }
-uint32 getDecimalValue() {
+uint32 getDecimalValue() {//Function that return the decimal value
 	return decimalValue;
 }
 
-uint32 TenPow(uint32 data, uint8 pow) {
+uint32 TenPow(uint32 data, uint8 pow) {//Function to pow a value
 
-	while (TRUE != pow) {
+	while (TRUE != pow) {//Pow until pow is zero
 		pow--;
 		data = data * TEN_VALUE;
 	}
@@ -41,7 +39,7 @@ uint32 TenPow(uint32 data, uint8 pow) {
 
 }
 
-void ArrayToFloat(uint8*dataPointer) {
+void ArrayToFloat(uint8*dataPointer) {//Function that converts a array to float
 	integerValue=FALSE;
 	decimalValue=FALSE;
 	sint8 DecimalCounter = DECIMAL_COUNTER_INIT;
@@ -50,8 +48,8 @@ void ArrayToFloat(uint8*dataPointer) {
 	uint8 ArrayLength = FALSE;
 
 
-	while (*dataPointer) {
-		if (('.' == *dataPointer) || (TRUE == DotFlag)) {
+	while (*dataPointer) {//Until datapointer is null loop
+		if (('.' == *dataPointer) || (TRUE == DotFlag)) {//Save the decimal and int values
 			DotFlag = TRUE;
 			DecimalCounter++;
 		} else {
@@ -96,7 +94,7 @@ void ArrayToFloat(uint8*dataPointer) {
 
 
 
-void obtenvalor(uint32 valor) {
+void obtenvalor(uint32 valor) {//Function that spread a value in diferent numbers
 
 
 	if ((valor / DECENAMILLON_VALOR) != FALSE) {
@@ -182,7 +180,7 @@ uint8 getDecenaMillar() {
 }
 
 
-void Integer_to_String(uint8* direccion, int num){
+void Integer_to_String(uint8* direccion, int num){//Function that convert a integer to string
 
 	int position = FALSE;
 
